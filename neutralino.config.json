@@ -33,10 +33,10 @@
   "modes": {
     "window": {
       "title": "BCULMS",
-      "width": 800,
-      "height": 500,
-      "minWidth": 400,
-      "minHeight": 200,
+      "width": 1366,
+      "height": 768,
+      "minWidth": 1366,
+      "minHeight": 768,
       "center": true,
       "fullScreen": false,
       "alwaysOnTop": false,
@@ -46,7 +46,7 @@
       "maximize": false,
       "hidden": false,
       "resizable": true,
-      "exitProcessOnClose": false
+      "exitProcessOnClose": true
     },
     "browser": {
       "globalVariables": {
