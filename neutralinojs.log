@@ -16,3 +16,6 @@ ERROR 2025-09-10 10:57:44,499 NE_RS_UNBLDRE: Unable to load application resource
 INFO 2025-09-10 10:58:44,773 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 M402-24BCU@M402-24
 ERROR 2025-09-10 10:58:45,611 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 M402-24BCU@M402-24
 ERROR 2025-09-10 10:58:45,891 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 M402-24BCU@M402-24
+INFO 2025-09-10 11:11:40,427 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 M402-24BCU@M402-24
+ERROR 2025-09-10 11:11:41,303 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 M402-24BCU@M402-24
+ERROR 2025-09-10 11:11:41,663 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 M402-24BCU@M402-24
