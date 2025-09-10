@@ -1,4 +1,14 @@
-# neutralinojs-minimal
+# Baguio Central University Library Management System
+
+## Workspace or Framework (NeutralinoJS)
+  - Credits to the NeutralinoJS below
+
+## Project Aim
+  - Reduce the need for manual recording of borrowing books from the library and returning the books
+
+
+
+## neutralinojs-minimal
 
 The default template for a Neutralinojs app. It's possible to use your favorite frontend framework by using [these steps](https://neutralino.js.org/docs/getting-started/using-frontend-libraries).
 
