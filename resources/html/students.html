@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/bootstrap.css" />
+    <link rel="stylesheet" href="../css/bootstrap-grid.css" />
+    <link rel="stylesheet" href="../css/bootstrap-icons.css" />
+  </head>
+  <body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <nav class="nav flex-column">
+        <a href="index.html" class="d-flex justify-content-center mb-5"
+          ><img src="../icons/appIcon.png" alt="Logo"
+        /></a>
+        <a class="nav-link mb-3" href="#" aria-current="page">
+          <p></p>
+          <span class="icon">
+            <i class="bi bi-grid-1x2"></i>
+          </span>
+          <span class="description">Dashboard</span>
+        </a>
+
+        <a
+          class="nav-link mb-3"
+          href="#"
+          data-bs-toggle="collapse"
+          aria-controls="submenu"
+          data-bs-target="#submenu"
+          aria-expanded="false"
+        >
+        <p></p>
+          <span class="icon">
+            <i class="bi bi-book"></i>
+          </span>
+          <span class="description"
+            >Bookshelf <i class="bi bi-caret-down"></i
+          ></span>
+        </a>
+        <div class="sub-menu collapse mb-1" id="submenu">
+          <a href="bookshelf-books.html" class="nav-link mb-2">
+            <p></p>
+            <span class="icon">
+              <i class="bi bi-book-fill"></i>
+            </span>
+            <span class="description">Books</span>
+          </a>
+          <a href="bookshelf-copies.html" class="nav-link mb-2">
+            <p></p>
+            <span class="icon">
+              <i class="bi bi-book-half"></i>
+            </span>
+            <span class="description">Copies</span>
+          </a>
+        </div>
+
+        <a class="nav-link mb-3" href="students.html">
+          <p></p>
+          <span class="icon">
+            <i class="bi bi-person-badge"></i>
+          </span>
+          <span class="description">Student Page</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+      <h2>Main Content</h2>
+    </main>
+
+    <script src="../js/neutralino.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+    <script src="../js/bootstrap.js"></script>
+  </body>
+</html>

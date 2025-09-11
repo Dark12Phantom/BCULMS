@@ -3,9 +3,8 @@
   "applicationId": "js.neutralino.sample",
   "version": "1.0.0",
   "defaultMode": "window",
-  "port": 0,
   "documentRoot": "/resources/",
-  "url": "/",
+  "url": "/html/index.html",
   "enableServer": true,
   "enableNativeAPI": true,
   "tokenSecurity": "one-time",
@@ -32,7 +31,7 @@
   },
   "modes": {
     "window": {
-      "title": "BCULMS",
+      "title": "Baguio Central University's Library Management System",
       "width": 1366,
       "height": 768,
       "minWidth": 1366,
@@ -63,8 +62,8 @@
       ]
     },
     "chrome": {
-      "width": 800,
-      "height": 500,
+      "width": 1366,
+      "height": 768,
       "args": "--user-agent=\"Neutralinojs chrome mode\"",
       "nativeBlockList": [
         "filesystem.*",

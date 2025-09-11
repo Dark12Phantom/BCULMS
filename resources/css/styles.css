@@ -1,0 +1,95 @@
+@font-face {
+  font-family: "Outfit";
+  src: url("/fonts/Outfit-VariableFont_wght.ttf") format("truetype-variations");
+  font-weight: 100 900;  /* Outfit supports thin → black */
+  font-style: normal;
+}
+
+body{
+    font-family: 'Outfit', sans-serif;
+}
+
+a, h1, h2, h3, h4, h5, h6, p, strong{
+    font-family: 'Outfit', sans-serif;
+}
+
+nav{
+  background-color: #7d0000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 190px;
+  padding-top: 20px;
+  transition: width 0.3s;
+  display: flex;
+}
+
+.sidebar img{
+  width: 100px;
+  height: 100px;
+}
+
+.sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  color: #eede36;
+  width: 180px;
+  margin-left: 10px;
+  border-radius: 10px 0 0 10px;
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover{
+  background-color: #eede36;
+  color: #7d0000;
+  border-radius: 10px 0 0 10px;
+  position: relative;
+}
+
+.sidebar .sub-menu{
+  background-color: #550000;
+}
+
+.sidebar .nav-link::before{
+  content: '';
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover::before{
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 90%;
+  top: 2;
+  left: 2px;
+  background-color: #7d0000;
+  border-radius: 10px 0 0 10px;
+}
+
+.sidebar .nav-link p::before{
+  content: '';
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover p::before{
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  top: 0;
+  left: 6px;
+  background-color: #eede36;
+  border-radius: 20px 0 0 20px;
+}
+
+
+/* MAIN CONTENT STYLES */
+
+.main-content{
+  height: 100vh;
+  margin-left: 220px;
+  padding: 20px;
+}
