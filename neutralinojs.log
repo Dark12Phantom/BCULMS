@@ -2523,3 +2523,10 @@ INFO 2025-09-11 23:48:55,178 Reloading the application... api\debug\debug.cpp:17
 INFO 2025-09-11 23:49:02,747 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
 INFO 2025-09-11 23:49:10,388 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
 INFO 2025-09-11 23:49:19,962 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+INFO 2025-09-11 23:56:11,702 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-11 23:56:12,497 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-11 23:56:12,788 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-11 23:56:12,838 NE_RS_UNBLDRE: Unable to load application resource file /resources/css/bootstrap-grid.css.map api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-11 23:56:12,839 NE_RS_UNBLDRE: Unable to load application resource file /resources/css/bootstrap.css.map api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-11 23:56:12,925 NE_RS_UNBLDRE: Unable to load application resource file /resources/js/bootstrap.bundle.js.map api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-11 23:56:12,928 NE_RS_UNBLDRE: Unable to load application resource file /resources/js/bootstrap.js.map api\debug\debug.cpp:20 darkp@TUFERICK
