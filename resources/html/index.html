@@ -32,7 +32,7 @@
           aria-expanded="false"
           aria-controls="submenu"
         >
-        <p></p>
+          <p></p>
           <span class="icon">
             <i class="bi bi-book"></i>
           </span>
@@ -78,10 +78,101 @@
     <!-- MAIN -->
 
     <main class="main-content">
-      <h2>Main Content</h2>
+      <h2>Dashboard</h2>
+      <div class="container text-center">
+        <!-- STATISTICS -->
+        <div class="row mb-5">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title">
+                  <h4>Stats</h4>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                  <div class="col">
+                    <div class="card">
+                      <div class="card-body d-flex justify-content-around align-items-center">
+                        <h5>Total Books</h5>
+                        <h5 id="totalBooks">0</h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card">
+                      <div class="card-body d-flex justify-content-around align-items-center">
+                        <h5>Borrowed Books</h5>
+                        <h5 id="borrowedBooks">0</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col">
+                    <div class="card">
+                      <div class="card-body d-flex justify-content-around align-items-center">
+                        <h5>Overdue Books</h5>
+                        <h5 id="overdueBooks">0</h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card">
+                      <div class="card-body d-flex justify-content-around align-items-center">
+                        <h5>Active Students</h5>
+                        <h5 id="activeStudents">0</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- NOTIFICATIONS -->
+        <div class="row mb-5">
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title">
+                  <h4>Notifications</h4>
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+          <!-- RECENT ACTIVITIES -->
+          <div class="col">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title">
+                  <h4>Recent Activity</h4>
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- QUICK ACTIONS -->
+        <div class="row justify-content-end">
+          <div class="col-6 flex-md-end">
+            <div class="card">
+              <div class="card-body">
+                <div class="card-title">
+                  <h4>Quick Actions</h4>
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script src="../js/neutralino.js"></script>
+    <script src="../modules/sql-wasm.js"></script>
+    <script src="../js/database-connection.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/bootstrap.bundle.js"></script>
   </body>
