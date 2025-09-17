@@ -13,10 +13,10 @@
     <!-- SIDEBAR -->
     <div class="sidebar">
       <nav class="nav flex-column">
-        <a href="index.html" class="d-flex justify-content-center mb-5"
+        <a href="./index.html" class="d-flex justify-content-center mb-5"
           ><img src="../icons/appIcon.png" alt="Logo"
         /></a>
-        <a class="nav-link mb-3" href="#" aria-current="page">
+        <a class="nav-link mb-3" href="./index.html" aria-current="page">
           <p></p>
           <span class="icon">
             <i class="bi bi-grid-1x2"></i>
@@ -26,11 +26,11 @@
 
         <a
           class="nav-link mb-3"
-          href="#"
           data-bs-toggle="collapse"
-          aria-controls="submenu"
           data-bs-target="#submenu"
+          role="button"
           aria-expanded="false"
+          aria-controls="submenu"
         >
         <p></p>
           <span class="icon">
@@ -41,14 +41,14 @@
           ></span>
         </a>
         <div class="sub-menu collapse mb-1" id="submenu">
-          <a href="bookshelf-books.html" class="nav-link mb-2">
+          <a href="./bookshelf-books.html" class="nav-link mb-2">
             <p></p>
             <span class="icon">
               <i class="bi bi-book-fill"></i>
             </span>
             <span class="description">Books</span>
           </a>
-          <a href="bookshelf-copies.html" class="nav-link mb-2">
+          <a href="./bookshelf-copies.html" class="nav-link mb-2">
             <p></p>
             <span class="icon">
               <i class="bi bi-book-half"></i>
@@ -57,7 +57,15 @@
           </a>
         </div>
 
-        <a class="nav-link mb-3" href="students.html">
+        <a class="nav-link mb-3" href="./transactions.html">
+          <p></p>
+          <span class="icon">
+            <i class="bi bi-person-badge"></i>
+          </span>
+          <span class="description">Transactions</span>
+        </a>
+
+        <a class="nav-link mb-3 active" href="./students.html">
           <p></p>
           <span class="icon">
             <i class="bi bi-person-badge"></i>
@@ -70,12 +78,11 @@
     <!-- MAIN -->
 
     <main class="main-content">
-      <h2>Main Content</h2>
+      <h2>Main</h2>
     </main>
 
     <script src="../js/neutralino.js"></script>
     <script src="../js/main.js"></script>
     <script src="../js/bootstrap.bundle.js"></script>
-    <script src="../js/bootstrap.js"></script>
   </body>
 </html>

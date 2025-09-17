@@ -42,7 +42,8 @@ nav{
   transition: all 0.3s ease;
 }
 
-.sidebar .nav-link:hover{
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active{
   background-color: #eede36;
   color: #7d0000;
   border-radius: 10px 0 0 10px;
@@ -58,7 +59,8 @@ nav{
   transition: all 0.3s ease;
 }
 
-.sidebar .nav-link:hover::before{
+.sidebar .nav-link:hover::before,
+.sidebar .nav-link.active::before{
   content: '';
   position: absolute;
   width: 10px;
@@ -74,7 +76,8 @@ nav{
   transition: all 0.3s ease;
 }
 
-.sidebar .nav-link:hover p::before{
+.sidebar .nav-link:hover p::before,
+.sidebar .nav-link.active p::before{
   content: '';
   position: absolute;
   width: 10px;
