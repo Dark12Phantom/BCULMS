@@ -1,4 +1,5 @@
 Neutralino.events.on("ready", async () => {
-    await initPath();
-    await initDB();
-})
+  await initPath();
+  await initDB();
+  await selectDepartments();
+});

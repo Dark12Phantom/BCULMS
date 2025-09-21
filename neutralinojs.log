@@ -747,3 +747,313 @@ ERROR 2025-09-18 21:39:05,527 NE_RS_UNBLDRE: Unable to load application resource
 ERROR 2025-09-18 21:39:12,624 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
 ERROR 2025-09-18 21:39:15,810 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
 ERROR 2025-09-18 21:39:17,749 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-20 16:29:05,626 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-20 16:29:07,281 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-20 16:29:07,374 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-20 16:29:18,468 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-20 16:29:19,325 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-20 16:29:20,184 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-20 16:29:21,012 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-20 16:29:23,455 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-20 16:29:24,434 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-20 17:57:12,397 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-20 17:57:12,440 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-20 17:57:41,187 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-20 17:57:41,230 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-20 17:57:50,728 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-20 17:57:50,776 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-20 17:58:09,032 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-20 17:58:09,069 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-20 17:58:42,053 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-20 17:58:42,095 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-20 17:58:58,262 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-20 17:58:58,302 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-20 17:59:12,797 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-20 17:59:12,839 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-20 17:59:23,249 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-20 17:59:23,276 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 13:52:01,056 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 13:52:02,820 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:52:02,996 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:54:15,032 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:54:16,048 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:54:17,298 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:54:21,498 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:54:23,704 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:54:24,824 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 13:55:34,430 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 13:55:34,507 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 13:55:46,474 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 13:55:46,549 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 13:55:52,814 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 13:55:52,857 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:56:27,631 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:56:29,103 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 13:57:42,050 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 13:57:42,076 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:57:50,419 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 13:57:52,519 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 13:58:35,562 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 13:58:35,606 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:03:33,701 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:03:33,750 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:03:49,736 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:03:49,824 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:05:41,086 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:05:41,167 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:06:04,429 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:06:29,102 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:06:29,303 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:07:33,611 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:07:33,667 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:07:45,954 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:07:46,114 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:07:54,299 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:07:54,357 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:08:18,147 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:08:18,270 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:09:19,866 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:09:19,898 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:09:39,844 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:09:40,497 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:09:45,700 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:09:51,011 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:10:22,898 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:10:22,942 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:10:39,145 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:10:39,203 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:11:01,929 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:11:01,977 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:11:56,370 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:11:56,427 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:14:14,737 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:14:14,834 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:17:42,440 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:17:42,535 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:17:44,641 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:17:44,795 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:18:17,329 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:18:17,367 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:20:55,763 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:20:55,825 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:21:35,310 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:21:35,371 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:22:35,356 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:22:35,419 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:23:26,785 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:23:26,817 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:24:10,212 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:24:11,766 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:24:12,165 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:24:33,003 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:24:33,092 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:24:36,647 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:24:36,692 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:24:40,423 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:26:01,495 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:26:01,693 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:26:13,186 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:26:13,225 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:26:28,681 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:26:48,515 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:26:48,634 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:26:51,675 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:26:51,782 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:26:55,881 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:26:55,966 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:26:58,676 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:26:58,736 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:27:08,254 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:27:09,453 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:27:09,875 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:27:49,955 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:27:50,020 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:28:08,015 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:28:08,257 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:28:32,187 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:28:32,245 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:28:52,706 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:28:52,777 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:29:06,877 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:29:07,078 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:29:17,911 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:29:18,020 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:29:35,627 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:29:35,671 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:30:59,795 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:30:59,844 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:31:18,595 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:31:18,654 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:31:51,530 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:31:51,587 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:32:00,030 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:32:00,112 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:32:14,468 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:32:14,545 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:32:23,892 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:32:23,968 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:33:14,592 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:33:14,665 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:34:15,614 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:34:15,687 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:35:41,764 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:35:41,831 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:35:48,619 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:35:48,699 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:36:11,923 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:36:11,982 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:36:16,405 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:36:16,452 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:36:20,678 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:36:20,753 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:36:25,316 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:36:25,568 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:36:30,247 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:36:30,288 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:36:52,099 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:36:52,162 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:37:27,049 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:37:27,085 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:37:32,785 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:37:34,828 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:37:34,865 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:37:46,637 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:37:47,755 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:37:48,211 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:39:32,458 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:39:32,571 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:39:48,895 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:39:48,963 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:40:14,644 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:40:14,702 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:40:18,507 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:40:18,590 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:40:48,779 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:40:48,873 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:41:49,152 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:41:49,301 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:42:13,178 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:42:13,238 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:47:51,778 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:47:51,904 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:48:37,983 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:48:39,033 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:48:39,509 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:50:42,675 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:50:42,770 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:50:54,044 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:50:54,167 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:51:27,105 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:51:27,205 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:52:17,201 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:52:17,302 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:52:49,635 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:52:51,195 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:52:51,492 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:53:33,306 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:53:33,431 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:53:41,453 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:53:41,504 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:54:12,168 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:54:12,222 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:54:14,182 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:54:14,349 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:54:48,033 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:54:48,097 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:55:36,609 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:55:36,640 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:57:27,857 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:57:27,925 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:58:14,025 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:58:14,064 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:58:33,155 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:58:33,210 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:59:10,852 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:59:10,901 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:59:14,825 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:59:14,858 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 14:59:24,586 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 14:59:25,490 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 14:59:25,896 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:00:08,012 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:00:08,071 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:00:19,211 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:00:19,247 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:00:26,595 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:00:26,643 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:00:50,770 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:00:50,829 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:01:01,467 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:01:01,517 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:01:09,633 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:01:09,671 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:01:47,397 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:01:47,593 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:01:52,711 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:01:52,760 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:02:06,146 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:02:06,181 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:03:49,415 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:03:49,444 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:04:22,216 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:04:22,244 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:05:26,226 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:05:26,260 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:05:57,731 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:05:57,781 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:08:38,635 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:08:38,660 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:09:58,737 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:09:58,766 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:11:25,670 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:11:25,696 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:11:34,336 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:11:35,233 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:11:35,519 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:12:23,928 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:12:23,990 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:12:40,606 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:12:41,433 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:12:41,758 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:13:09,563 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:13:10,403 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:13:10,742 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:13:52,288 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:13:53,130 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:13:53,433 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:14:01,905 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:14:31,657 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:14:32,562 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:14:33,005 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:14:43,682 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:15:12,881 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:15:12,957 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:15:34,530 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:15:34,582 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:16:10,856 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:16:10,904 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:16:25,201 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:16:25,262 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:16:44,961 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:16:44,996 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:17:01,408 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:17:03,315 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:17:06,199 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:17:37,911 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:17:37,961 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:17:48,096 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:17:48,134 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:17:57,636 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:18:29,455 Reloading the application... api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:18:29,497 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:18:33,528 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:18:37,049 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:18:38,056 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:18:40,100 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+INFO 2025-09-21 15:19:34,446 Auth info was exported to ./.tmp/auth_info.json api\debug\debug.cpp:17 darkp@TUFERICK
+ERROR 2025-09-21 15:19:35,256 NE_RS_UNBLDRE: Unable to load application resource file /resources/favicon.ico api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:19:35,585 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:19:49,108 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:19:58,724 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:20:00,914 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK
+ERROR 2025-09-21 15:20:03,803 NE_RS_UNBLDRE: Unable to load application resource file /resources/.well-known/appspecific/com.chrome.devtools.json api\debug\debug.cpp:20 darkp@TUFERICK

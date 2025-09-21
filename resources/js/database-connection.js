@@ -19,18 +19,15 @@ async function initDB() {
   console.log("Full DB path:", fullDbPath);
 
   try {
-    // Try different methods to read the database file
     let fileData;
     let stats;
 
-    // Method 1: Simple path
     try {
       fileData = await Neutralino.filesystem.readBinaryFile(fullDbPath);
       stats = await Neutralino.filesystem.getStats(fullDbPath);
     } catch (e1) {
       console.log("Method 1 failed, trying alternative...", e1.message);
 
-      // Method 2: Object format with path
       try {
         fileData = await Neutralino.filesystem.readBinaryFile({
           path: fullDbPath,
@@ -39,7 +36,6 @@ async function initDB() {
       } catch (e2) {
         console.log("Method 2 failed, trying original format...", e2.message);
 
-        // Method 3: Your original format (might work in some versions)
         fileData = await Neutralino.filesystem.readBinaryFile({
           directory: dbPath.replace(/\\/g, "/"),
           fileName: dbFile,
@@ -72,14 +68,14 @@ async function initDB() {
     await saveDB("initDB");
 
   }
-    const result = await handleSelect("department");
-    console.log(result);
+    // const result = await handleSelect("department");
+    // console.log(result);
 }
 
 function createDB() {
   db = new SQL.Database();
 
-  // CREATE TABLES IF NO DATABASE IS FOUND
+  // CREATE TABLES IF DATABASE IS NOT FOUND
   db.run(`CREATE TABLE IF NOT EXISTS "book_copy" (
 	"copy_id"	TEXT NOT NULL UNIQUE,
 	"book_id"	TEXT NOT NULL,
@@ -166,16 +162,12 @@ async function saveDB(source = "") {
   console.log(`Attempting to save DB [${source}]:`, fullDbPath);
   console.log("Data size:", dbData.byteLength, "bytes");
 
-  // Try different save methods
   const saveAttempts = [
-    // Method 1: Simple path + data (most common)
     () => Neutralino.filesystem.writeBinaryFile(fullDbPath, dbData),
 
-    // Method 2: Object with path
     () =>
       Neutralino.filesystem.writeBinaryFile({ path: fullDbPath, data: dbData }),
 
-    // Method 3: Your original directory/fileName format
     () =>
       Neutralino.filesystem.writeBinaryFile({
         directory: dbPath.replace(/\\/g, "/"),
@@ -412,7 +404,7 @@ async function handleSelect(table, columns = "*", whereClause = null) {
     values = whereValues;
   }
 
-  console.log(`Executing SELECT:`, query, values);
+  // console.log(`Executing SELECT:`, query, values);
 
   try {
     const stmt = db.prepare(query);
@@ -472,6 +464,10 @@ async function deleteStudent(studentId) {
 
 async function getStudents(whereClause = null) {
   return await insertDB("select", "students", "*", whereClause);
+}
+
+async function getDepartments(whereClause = null) {
+  return await insertDB("select", "department", "*", whereClause);
 }
 
 async function insertTransaction(transactionData) {

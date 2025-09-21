@@ -77,24 +77,19 @@
 
     <!-- MAIN -->
 
-    <main class="main-content">
+    <main class="main-content d-flex flex-column">
       <div id="image-container">
         <img src="../images/bcu_building2.jpg" alt="" id="background" />
       </div>
       <h2>Student List</h2>
-      <div class="btn-group">
+      <form class="d-flex mb-2">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-success" type="submit"><span class="bi bi-search"></span></button>
+      </form>
+      <div class="btn-group align-self-md-end mb-2">
         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter</button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#">CBA</a></li>
-          <li><a class="dropdown-item" href="#">CTELA</a></li>
-          <li><a class="dropdown-item" href="#">CCJE</a></li>
-          <li><a class="dropdown-item" href="#">CoE</a></li>
-          <li><a class="dropdown-item" href="#">CHTM</a></li>
-          <li><a class="dropdown-item" href="#">CNSM</a></li>
-          <li><a class="dropdown-item" href="#">GS</a></li>
-          <li><a class="dropdown-item" href="#">ES</a></li>
-          <li><a class="dropdown-item" href="#">JHS</a></li>
-          <li><a class="dropdown-item" href="#">SHS</a></li>
+        <ul class="dropdown-menu" id="departmentFilter">
+          
         </ul>
       </div>
 
@@ -110,7 +105,10 @@
             <th>Date Borrowed</th>
           </tr>
         </thead>
+        <tbody>
+        </tbody>
       </table>
+      <button type="button" class="btn btn-info">Add student Record</button>
     </main>
 
     <script src="../js/bootstrap.bundle.js"></script>
@@ -118,6 +116,7 @@
     <script src="../js/main.js"></script>
     <script src="../js/sql-wasm.js"></script>
     <script src="../js/database-connection.js"></script>
+    <script src="../js/getFromDB.js"></script>
     <script src="../js/app.js"></script>
   </body>
 </html>
