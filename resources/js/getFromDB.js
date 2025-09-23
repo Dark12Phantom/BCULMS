@@ -26,3 +26,20 @@ async function selectDepartments() {
     console.error("Failed to get departments:", error);
   }
 }
+
+async function getAllBooks() {
+  try {
+    const result = await getBooks({ status: "In Library" });
+    const books = result.data || []; 
+    console.log("Books:", books);
+
+    for (let book of books) {
+      const copiesResult = await getBookCopyNumber({ book_id: book.book_id });
+      const copies = copiesResult.data || [];
+      book.totalCopies = copies[0]?.totalCopies || 0;
+    }
+    return books;
+  } catch (error) {
+    console.error("Failed to get books:", error);
+  }
+}

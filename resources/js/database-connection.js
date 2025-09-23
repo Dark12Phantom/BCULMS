@@ -19,33 +19,8 @@ async function initDB() {
   console.log("Full DB path:", fullDbPath);
 
   try {
-    let fileData;
-    let stats;
-
-    try {
-      fileData = await Neutralino.filesystem.readBinaryFile(fullDbPath);
-      stats = await Neutralino.filesystem.getStats(fullDbPath);
-    } catch (e1) {
-      console.log("Method 1 failed, trying alternative...", e1.message);
-
-      try {
-        fileData = await Neutralino.filesystem.readBinaryFile({
-          path: fullDbPath,
-        });
-        stats = await Neutralino.filesystem.getStats({ path: fullDbPath });
-      } catch (e2) {
-        console.log("Method 2 failed, trying original format...", e2.message);
-
-        fileData = await Neutralino.filesystem.readBinaryFile({
-          directory: dbPath.replace(/\\/g, "/"),
-          fileName: dbFile,
-        });
-        stats = await Neutralino.filesystem.getStats({
-          directory: dbPath.replace(/\\/g, "/"),
-          fileName: dbFile,
-        });
-      }
-    }
+    let fileData = await Neutralino.filesystem.readBinaryFile(fullDbPath);
+    let stats = await Neutralino.filesystem.getStats(fullDbPath);
 
     db = new SQL.Database(new Uint8Array(fileData));
 
@@ -237,7 +212,7 @@ async function insertDB(operation, table, data, whereClause = null) {
       await updateDB(`${operation} ${table}`, result);
     }
 
-    console.log(`insertDB completed: ${operation} on ${table}`, result);
+    // console.log(`insertDB completed: ${operation} on ${table}`, result);
     return result;
   } catch (error) {
     console.error(`insertDB error: ${operation} on ${table}:`, error);
@@ -482,6 +457,14 @@ async function updateTransaction(transactionData, transactionId) {
 
 async function getTransactions(whereClause = null) {
   return await insertDB("select", "transactions", "*", whereClause);
+}
+
+async function getBookCopies(whereClause = null){
+  return await insertDB("select", "book_copy", "*", whereClause);
+}
+
+async function getBookCopyNumber(whereClause = null){
+  return await insertDB("select", "book_copy", "COUNT(*) as totalCopies", whereClause);
 }
 
 // Example usage functions (you can uncomment these for testing)
