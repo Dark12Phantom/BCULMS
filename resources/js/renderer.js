@@ -19,21 +19,89 @@ async function renderBooks(page = 1, rowsPerPage = 25) {
   const end = start + rowsPerPage;
   const pageRows = books.slice(start, end);
 
-  pageRows.forEach((book) => {
-    const tr = document.createElement("tr");
-    const copies = bookCopyNumber[book.book_id] || 0;
-    tr.innerHTML = `
+  if (pageRows.length > 0) {
+    pageRows.forEach((book) => {
+      const tr = document.createElement("tr");
+      const copies = bookCopyNumber[book.book_id] || 0;
+      tr.dataset.bookId = book.book_id;
+      tr.innerHTML = `
             <td>${book.title || "&nbsp;"}</td>
             <td>${book.author || "&nbsp;"}</td>
             <td>${book.publication_date || "&nbsp;"}</td>
             <td>${book.department_id || "&nbsp;"}</td>
             <td>${copies}</td>
         `;
-    bookTBody.appendChild(tr);
-  });
+      bookTBody.appendChild(tr);
+    });
+  } else {
+    bookTBody.innerHTML = "No books on the record";
+  }
 
   await renderPager(books.length, rowsPerPage, page, "pager-top");
   await renderPager(books.length, rowsPerPage, page, "pager-bottom");
+}
+
+function bookContentLoader() {
+  document.addEventListener("DOMContentLoaded", () => {
+    const tbody = document.getElementById("booksTableBody");
+
+    // Create proper Bootstrap modal
+    const modalHTML = `
+    <div class="modal fade" id="bookContextModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-info text-white">
+            <h5 class="modal-title">Book Options</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-0">
+            <ul class="list-group list-group-flush mb-0">
+              <li class="list-group-item list-group-item-action" id="viewBook">View Details</li>
+              <li class="list-group-item list-group-item-action" id="editBook">Edit Details</li>
+              <li class="list-group-item list-group-item-action text-danger" id="deleteBook">Delete</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+    const modalElement = document.getElementById("bookContextModal");
+    const modalInstance = new bootstrap.Modal(modalElement);
+    let selectedRow = null;
+
+    tbody.addEventListener("contextmenu", (e) => {
+      const row = e.target.closest("tr[data-book-id]");
+      if (!row) return;
+      e.preventDefault();
+      selectedRow = row;
+
+      modalInstance.show();
+    });
+
+    // Menu actions
+    modalElement.querySelector("#viewBook").onclick = () => {
+      const id = selectedRow.dataset.bookId;
+      showPopup("Book Details", `Book ID: ${id}`);
+      modalInstance.hide();
+    };
+
+    modalElement.querySelector("#editBook").onclick = () => {
+      const id = selectedRow.dataset.bookId;
+      showPopup("Edit Book", `Editing Book ID: ${id}`);
+      modalInstance.hide();
+    };
+
+    modalElement.querySelector("#deleteBook").onclick = () => {
+      const id = selectedRow.dataset.bookId;
+      if (confirm(`Delete book ID ${id}?`)) {
+        selectedRow.remove();
+      }
+      modalInstance.hide();
+    };
+  });
 }
 
 async function renderPager(totalRows, rowsPerPage, currentPage, pagerID) {

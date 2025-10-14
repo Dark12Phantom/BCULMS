@@ -107,7 +107,44 @@
         <tbody id="booksTableBody"></tbody>
       </table>
       <div id="pager-bottom" class="d-flex align-self-md-center"></div>
-      <button type="button" class="btn btn-info">Add Books</button>
+      <button id="addBookBtn" type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addBookContent">Add Books</button>
+      <div class="modal fade" id="addBookContent" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title">Add Book</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Title</span>
+                <input name="book_id" type="text" class="form-control" required>
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Author</span>
+                <input name="author" type="text" class="form-control" required>
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Publication Date</span>
+                <input name="publication_date" type="date" class="form-control" required>
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Type</span>
+                <select name="type" type="date" class="form-control" required>
+                  <option value="Book">Book</option>
+                  <option value="Research Paper">Research Paper</option>
+                </select>
+              </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Type</span>
+                <select name="type" id="departmentSelect" class="form-control" required>
+                  <option value="">Loading...</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script src="../js/bootstrap.bundle.js"></script>
@@ -117,6 +154,7 @@
     <script src="../js/database-connection.js"></script>
     <script src="../js/getFromDB.js"></script>
     <script src="../js/renderer.js"></script>
+    <script src="../js/popup.js"></script>
     <script src="../js/app.js"></script>
   </body>
 </html>

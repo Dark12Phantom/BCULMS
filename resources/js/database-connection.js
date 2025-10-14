@@ -1,3 +1,4 @@
+//BACKEND FUNCTIONS
 let SQL = null;
 let db = null;
 let docsPath = null;
@@ -43,19 +44,28 @@ async function initDB() {
     await saveDB("initDB");
 
   }
-    // const result = await handleSelect("department");
-    // console.log(result);
 }
 
 function createDB() {
   db = new SQL.Database();
 
-  // CREATE TABLES IF DATABASE IS NOT FOUND
+  db.run(`CREATE TABLE IF NOT EXISTS "archived_books" (
+	"archive_id" INTEGER NOT NULL UNIQUE,
+	"book_id"	INTEGER NOT NULL UNIQUE,
+	"book_title"	TEXT NOT NULL,
+	"archive_date"	TEXT NOT NULL,
+  "due_date" TEXT,
+	PRIMARY KEY("archive_id"),
+	FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE);`);
+
   db.run(`CREATE TABLE IF NOT EXISTS "book_copy" (
 	"copy_id"	TEXT NOT NULL UNIQUE,
 	"book_id"	TEXT NOT NULL,
 	"status"	TEXT NOT NULL,
 	"condition"	TEXT NOT NULL,
+  "borrowed_date" TEXT,
+  "returned_date" TEXT,
+  "due_date" TEXT,
 	PRIMARY KEY("copy_id"),
 	FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE);`);
 
@@ -102,7 +112,6 @@ function createDB() {
 	FOREIGN KEY("copy_id") REFERENCES "book_copy"("copy_id"),
 	FOREIGN KEY("student_id") REFERENCES "students"("student_id"));`);
 
-  // INSERT PREDEFINED DATA
   db.run(`INSERT OR IGNORE INTO "department" ("department_id","name") VALUES 
     ('CBA','College of Business Administration'),
     ('CCJE','College of Criminal Justice Education'),
@@ -120,7 +129,6 @@ function createDB() {
 async function saveDB(source = "") {
   const fullDbPath = `${dbPath}/${dbFile}`.replace(/\\/g, "/");
 
-  // Ensure directory exists
   try {
     await Neutralino.filesystem.getStats(dbPath.replace(/\\/g, "/"));
   } catch (e) {
@@ -167,7 +175,6 @@ async function saveDB(source = "") {
   console.error("All save methods failed");
 }
 
-// Insert functions for user operations
 async function insertDB(operation, table, data, whereClause = null) {
   console.log(`insertDB called: ${operation} on ${table}`, data);
 
@@ -199,7 +206,6 @@ async function insertDB(operation, table, data, whereClause = null) {
 
       case "select":
         result = await handleSelect(table, data, whereClause);
-        // SELECT operations don't modify the database
         hasChanges = false;
         break;
 
@@ -207,12 +213,10 @@ async function insertDB(operation, table, data, whereClause = null) {
         throw new Error(`Unsupported operation: ${operation}`);
     }
 
-    // If there are changes, call updateDB to handle persistence
     if (hasChanges) {
       await updateDB(`${operation} ${table}`, result);
     }
 
-    // console.log(`insertDB completed: ${operation} on ${table}`, result);
     return result;
   } catch (error) {
     console.error(`insertDB error: ${operation} on ${table}:`, error);
@@ -220,12 +224,10 @@ async function insertDB(operation, table, data, whereClause = null) {
   }
 }
 
-// Handle database updates and persistence
 async function updateDB(source = "manual update", operationResult = null) {
   console.log(`updateDB called from: ${source}`);
 
   try {
-    // Log the operation result if provided
     if (operationResult) {
       console.log(`Operation result:`, {
         changes: operationResult.changes || 0,
@@ -234,7 +236,6 @@ async function updateDB(source = "manual update", operationResult = null) {
       });
     }
 
-    // Save the database if there were changes
     if (!operationResult || operationResult.changes > 0) {
       await saveDB(source);
       console.log(`Database updated and saved: ${source}`);
@@ -249,7 +250,6 @@ async function updateDB(source = "manual update", operationResult = null) {
   }
 }
 
-// Helper function to handle INSERT operations
 async function handleInsert(table, data) {
   if (!data || typeof data !== "object") {
     throw new Error("Insert data must be an object");
@@ -282,7 +282,6 @@ async function handleInsert(table, data) {
   }
 }
 
-// Helper function to handle UPDATE operations
 async function handleUpdate(table, data, whereClause) {
   if (!data || typeof data !== "object") {
     throw new Error("Update data must be an object");
@@ -321,7 +320,6 @@ async function handleUpdate(table, data, whereClause) {
   }
 }
 
-// Helper function to handle DELETE operations
 async function handleDelete(table, whereClause) {
   if (!whereClause || typeof whereClause !== "object") {
     throw new Error("WHERE clause must be an object");
@@ -351,12 +349,10 @@ async function handleDelete(table, whereClause) {
   }
 }
 
-// Helper function to handle SELECT operations
 async function handleSelect(table, columns = "*", whereClause = null) {
   let query;
   let values = [];
 
-  // Handle columns parameter
   if (Array.isArray(columns)) {
     query = `SELECT ${columns.join(", ")} FROM ${table}`;
   } else if (typeof columns === "string") {
@@ -367,7 +363,6 @@ async function handleSelect(table, columns = "*", whereClause = null) {
     query = `SELECT * FROM ${table}`;
   }
 
-  // Handle WHERE clause
   if (whereClause && typeof whereClause === "object") {
     const whereColumns = Object.keys(whereClause);
     const whereValues = Object.values(whereClause);
@@ -379,7 +374,6 @@ async function handleSelect(table, columns = "*", whereClause = null) {
     values = whereValues;
   }
 
-  // console.log(`Executing SELECT:`, query, values);
 
   try {
     const stmt = db.prepare(query);
@@ -406,17 +400,82 @@ async function handleSelect(table, columns = "*", whereClause = null) {
   }
 }
 
-// Convenience functions for common operations
-async function insertBook(bookData) {
-  return await insertDB("insert", "books", bookData);
+//FRONT END FUNCTIONS
+async function insertBook(bookData, numberOfCopies = 1) {
+  const bookResult = await insertDB("insert", "books", bookData);
+  
+  if (numberOfCopies > 0) {
+    for (let i = 1; i <= numberOfCopies; i++) {
+      const copyData = {
+        copy_id: generateCopyId(bookData.book_id, i),
+        book_id: bookData.book_id,
+        status: "Available",
+        condition: "Good"
+      };
+      await insertDB("insert", "book_copy", copyData);
+    }
+  }
+  
+  return bookResult;
 }
 
-async function updateBook(bookData, bookId) {
-  return await insertDB("update", "books", bookData, { book_id: bookId });
+async function updateBook(bookData, bookId, newNumberOfCopies = null) {
+  const bookResult = await insertDB("update", "books", bookData, { book_id: bookId });
+  
+  if (newNumberOfCopies !== null) {
+    const existingCopies = await insertDB("select", "book_copy", "*", { book_id: bookId });
+    const currentCount = existingCopies.length;
+    
+    if (newNumberOfCopies > currentCount) {
+      const copiesToAdd = newNumberOfCopies - currentCount;
+      const department = bookId.split('-')[0];
+      
+      for (let i = 1; i <= copiesToAdd; i++) {
+        const copyData = {
+          copy_id: generateCopyId(bookId, department, currentCount + i),
+          book_id: bookId,
+          status: "Available",
+          condition: "Good"
+        };
+        await insertDB("insert", "book_copy", copyData);
+      }
+    } else if (newNumberOfCopies < currentCount) {
+      const copiesToRemove = currentCount - newNumberOfCopies;
+      const availableCopies = existingCopies.filter(copy => copy.status === "Available");
+      
+      if (availableCopies.length < copiesToRemove) {
+        throw new Error(`Cannot remove ${copiesToRemove} copies. Only ${availableCopies.length} available copies exist. ${currentCount - availableCopies.length} copies are currently borrowed.`);
+      }
+      for (let i = 0; i < copiesToRemove; i++) {
+        await insertDB("delete", "book_copy", null, { copy_id: availableCopies[i].copy_id });
+      }
+    }
+  }
+  
+  return bookResult;
 }
 
 async function deleteBook(bookId) {
+  const copies = await insertDB("select", "book_copy", "*", { book_id: bookId });
+  const borrowedCopies = copies.filter(copy => copy.status !== "Available");
+  
+  if (borrowedCopies.length > 0) {
+    throw new Error(`Cannot delete book. ${borrowedCopies.length} copy/copies are currently borrowed.`);
+  }
+  
+  for (const copy of copies) {
+    await insertDB("delete", "book_copy", null, { copy_id: copy.copy_id });
+  }
+  
   return await insertDB("delete", "books", null, { book_id: bookId });
+}
+
+function generateCopyId(bookId, copyNumber) {
+  return `${department}-${bookId}-C${String(copyNumber).padStart(5, '0')}`;
+}
+
+async function getBookCopies(whereClause = null){
+  return await insertDB("select", "book_copy", "*", whereClause);
 }
 
 async function getBooks(whereClause = null) {
@@ -465,6 +524,65 @@ async function getBookCopies(whereClause = null){
 
 async function getBookCopyNumber(whereClause = null){
   return await insertDB("select", "book_copy", "COUNT(*) as totalCopies", whereClause);
+}
+
+async function generateArchiveId() {
+  const archives = await insertDB("select", "archived_books", "*", null);
+  
+  if (archives.length === 0) {
+    return 1;
+  }
+  
+  const maxId = Math.max(...archives.map(archive => archive.archive_id));
+  return maxId + 1;
+}
+
+async function archiveBook(bookId) {
+  const books = await insertDB("select", "books", "*", { book_id: bookId });
+  
+  if (books.length === 0) {
+    throw new Error(`Book with ID ${bookId} not found.`);
+  }
+  
+  const book = books[0];
+  
+  const copies = await insertDB("select", "book_copy", "*", { book_id: bookId });
+  const borrowedCopies = copies.filter(copy => copy.status !== "Available");
+  
+  if (borrowedCopies.length > 0) {
+    throw new Error(`Cannot archive book. ${borrowedCopies.length} copy/copies are currently borrowed.`);
+  }
+  
+  const existingArchive = await insertDB("select", "archived_books", "*", { book_id: bookId });
+  if (existingArchive.length > 0) {
+    throw new Error(`Book ${bookId} is already archived.`);
+  }
+  
+  const archiveData = {
+    archive_id: await generateArchiveId(),
+    book_id: book.book_id,
+    book_title: book.title,
+    archive_date: new Date().toISOString()
+  };
+  
+  await insertDB("insert", "archived_books", archiveData);
+  
+  for (const copy of copies) {
+    await insertDB("delete", "book_copy", null, { copy_id: copy.copy_id });
+  }
+  
+  await insertDB("delete", "books", null, { book_id: bookId });
+  
+  return {
+    success: true,
+    archive_id: archiveData.archive_id,
+    book_id: bookId,
+    copies_deleted: copies.length
+  };
+}
+
+async function getArchivedBooks(whereClause = null) {
+  return await insertDB("select", "archived_books", "*", whereClause);
 }
 
 // Example usage functions (you can uncomment these for testing)

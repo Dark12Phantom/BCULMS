@@ -1,4 +1,5 @@
 const departmentFilter = document.querySelector("#departmentFilter");
+const departmentLoader = document.querySelector("#departmentSelect");
 
 async function selectDepartments() {
   if (!departmentFilter) {
@@ -24,6 +25,38 @@ async function selectDepartments() {
     return result;
   } catch (error) {
     console.error("Failed to get departments:", error);
+  }
+}
+
+async function loadDepartments(){
+  if (!departmentLoader) {
+    console.log("Department select not found");
+    return;
+  }
+
+  try {
+    const result = await handleSelect("department");
+    console.log("departments (for select):", result);
+
+    departmentLoader.innerHTML = "";
+
+    // Optionally add a placeholder
+    const placeholder = document.createElement("option");
+    placeholder.textContent = "Select Department";
+    placeholder.value = "";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    departmentLoader.appendChild(placeholder);
+
+    (result.data || []).forEach((dept) => {
+      const opt = document.createElement("option");
+      opt.value = dept.department_id;
+      opt.textContent = dept.name;
+      departmentLoader.appendChild(opt);
+    });
+  } catch (error) {
+    console.error("Failed to load departments:", error);
+    departmentLoader.innerHTML = `<option value="">Error loading</option>`;
   }
 }
 
