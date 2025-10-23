@@ -26,22 +26,22 @@
 
         <a
           class="nav-link mb-3"
-          data-bs-toggle="expand"
-          data-bs-target="#submenu"
+          data-bs-toggle="collapse"
+          data-bs-target="#submenuBookshelf"
           role="button"
-          aria-expanded="true"
-          aria-controls="submenu"
+          aria-expanded="false"
+          aria-controls="submenuBookshelf"
         >
           <p></p>
           <span class="icon">
             <i class="bi bi-book"></i>
           </span>
-          <span class="description"
-            >Bookshelf <i class="bi bi-caret-down"></i
-          ></span>
+          <span class="description">
+            Bookshelf <i class="bi bi-caret-down"></i>
+          </span>
         </a>
-        <div class="sub-menu expand mb-1" id="submenu">
-          <a href="./bookshelf-books.html" class="nav-link mb-2 active">
+        <div class="sub-menu collapse mb-1" id="submenuBookshelf">
+          <a href="./bookshelf-books.html" class="nav-link mb-2">
             <p></p>
             <span class="icon">
               <i class="bi bi-book-fill"></i>
@@ -57,13 +57,39 @@
           </a>
         </div>
 
-        <a class="nav-link mb-3" href="./transactions.html">
+        <!-- Transactions -->
+        <a
+          class="nav-link mb-3"
+          data-bs-toggle="collapse"
+          data-bs-target="#submenuTransactions"
+          role="button"
+          aria-expanded="false"
+          aria-controls="submenuTransactions"
+        >
           <p></p>
           <span class="icon">
-            <i class="bi bi-person-badge"></i>
+            <i class="bi bi-person-lines-fill"></i>
           </span>
-          <span class="description">Transactions</span>
+          <span class="description">
+            Transactions <i class="bi bi-caret-down"></i>
+          </span>
         </a>
+        <div class="sub-menu collapse mb-1" id="submenuTransactions">
+          <a href="./transactions_borrow.html" class="nav-link mb-2">
+            <p></p>
+            <span class="icon">
+              <i class="bi bi-calendar-range-fill"></i>
+            </span>
+            <span class="description">Borrows</span>
+          </a>
+          <a href="./transaction_library.html" class="nav-link mb-2">
+            <p></p>
+            <span class="icon">
+              <i class="bi bi-database-fill-gear"></i>
+            </span>
+            <span class="description">Library</span>
+          </a>
+        </div>
 
         <a class="nav-link mb-3" href="./students.html">
           <p></p>
@@ -107,26 +133,51 @@
         <tbody id="booksTableBody"></tbody>
       </table>
       <div id="pager-bottom" class="d-flex align-self-md-center"></div>
-      <button id="addBookBtn" type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addBookContent">Add Books</button>
+
+      <button
+        id="addBookBtn"
+        type="button"
+        class="btn btn-info"
+        data-bs-toggle="modal"
+        data-bs-target="#addBookContent"
+      >
+        Add Books
+      </button>
+
       <div class="modal fade" id="addBookContent" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header bg-info text-white">
               <h5 class="modal-title">Add Book</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
             <div class="modal-body">
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Title</span>
-                <input name="book_id" type="text" class="form-control" required>
+                <input name="title" type="text" class="form-control" required />
               </div>
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Author</span>
-                <input name="author" type="text" class="form-control" required>
+                <input
+                  name="author"
+                  type="text"
+                  class="form-control"
+                  required
+                />
               </div>
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Publication Date</span>
-                <input name="publication_date" type="date" class="form-control" required>
+                <input
+                  name="publication_date"
+                  type="date"
+                  class="form-control"
+                  required
+                />
               </div>
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Type</span>
@@ -136,15 +187,55 @@
                 </select>
               </div>
               <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Type</span>
-                <select name="type" id="departmentSelect" class="form-control" required>
+                <span class="input-group-text">Department</span>
+                <select
+                  name="department_id"
+                  id="departmentSelect"
+                  class="form-control"
+                  required
+                >
                   <option value="">Loading...</option>
                 </select>
               </div>
+              <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Copies</span>
+                <input
+                  name="copies"
+                  type="number"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="button" class="btn btn-primary" id="saveBookBtn">
+                Save Book
+              </button>
             </div>
           </div>
         </div>
       </div>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const params = new URLSearchParams(window.location.search);
+          const modalId = params.get("modal");
+
+          if (modalId) {
+            const modalEl = document.getElementById(modalId);
+            if (modalEl) {
+              const modal = new bootstrap.Modal(modalEl);
+              modal.show();
+            }
+          }
+        });
+      </script>
     </main>
 
     <script src="../js/bootstrap.bundle.js"></script>
@@ -152,8 +243,14 @@
     <script src="../js/main.js"></script>
     <script src="../js/sql-wasm.js"></script>
     <script src="../js/database-connection.js"></script>
+    <script src="../js/create-table.js"></script>
+    <script src="../js/database-operations.js"></script>
+    <script src="../js/frontend-operations.js"></script>
     <script src="../js/getFromDB.js"></script>
+    <script src="../js/insertIntoDB.js"></script>
     <script src="../js/renderer.js"></script>
+    <script src="../js/filter.js"></script>
+    <script src="../js/search.js"></script>
     <script src="../js/popup.js"></script>
     <script src="../js/app.js"></script>
   </body>

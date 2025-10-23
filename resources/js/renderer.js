@@ -22,7 +22,8 @@ async function renderBooks(page = 1, rowsPerPage = 25) {
   if (pageRows.length > 0) {
     pageRows.forEach((book) => {
       const tr = document.createElement("tr");
-      const copies = bookCopyNumber[book.book_id] || 0;
+      const bookId = parseInt(book.book_id, 10);
+      const copies = bookCopyNumber[bookId] || 0;
       tr.dataset.bookId = book.book_id;
       tr.innerHTML = `
             <td>${book.title || "&nbsp;"}</td>
@@ -158,5 +159,91 @@ async function renderPager(totalRows, rowsPerPage, currentPage, pagerID) {
   pager.appendChild(ul);
 }
 async function renderStudents() {}
-async function renderBookCopies() {}
+
+async function renderBookCopies(page = 1, rowsPerPage = 25) {
+  const bookCopyTBody = document.querySelector("#bookCopiesTableBody");
+  if (!bookCopyTBody) return console.error("Table body #bookCopiesTableBody not found");
+
+  bookCopyTBody.innerHTML = "";
+
+  try {
+    // Get all book copies
+    const copiesResult = await insertDB(
+      "select",
+      "book_copy",
+      "copy_id, book_id, status, condition, borrowed_date, returned_date, due_date",
+      null
+    );
+    
+    const copies = copiesResult?.data || [];
+    
+    // Get all books to map book titles
+    const booksResult = await insertDB(
+      "select",
+      "books",
+      "book_id, title",
+      null
+    );
+    
+    const books = booksResult?.data || [];
+    
+    // Create a map of book_id to title for quick lookup
+    const bookTitles = {};
+    books.forEach(book => {
+      bookTitles[book.book_id] = book.title;
+    });
+    
+    // Get borrower information if needed (assuming you have a borrowers table)
+    // Adjust this based on your actual database schema
+    const borrowersResult = await insertDB(
+      "select",
+      "borrowers",
+      "copy_id, name",
+      "WHERE returned_date IS NULL" // Only active borrows
+    );
+    
+    const borrowers = borrowersResult?.data || [];
+    
+    // Create a map of copy_id to borrower name
+    const borrowerNames = {};
+    borrowers.forEach(borrower => {
+      borrowerNames[borrower.copy_id] = borrower.name;
+    });
+
+    // Pagination
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageRows = copies.slice(start, end);
+
+    if (pageRows.length > 0) {
+      pageRows.forEach((copy) => {
+        const tr = document.createElement("tr");
+        const bookId = parseInt(copy.book_id, 10);
+        const title = bookTitles[bookId] || "Unknown";
+        const borrowedBy = borrowerNames[copy.copy_id] || "—";
+        
+        tr.dataset.copyId = copy.copy_id;
+        tr.innerHTML = `
+          <td>${copy.copy_id || "&nbsp;"}</td>
+          <td>${copy.book_id || "&nbsp;"}</td>
+          <td>${title}</td>
+          <td>${copy.status || "&nbsp;"}</td>
+          <td>${borrowedBy}</td>
+          <td>${copy.condition || "&nbsp;"}</td>
+        `;
+        bookCopyTBody.appendChild(tr);
+      });
+    } else {
+      bookCopyTBody.innerHTML = '<tr><td colspan="6">No book copies on record</td></tr>';
+    }
+
+    await renderPager(copies.length, rowsPerPage, page, "pager-top");
+    await renderPager(copies.length, rowsPerPage, page, "pager-bottom");
+    
+  } catch (error) {
+    console.error("Failed to render book copies:", error);
+    bookCopyTBody.innerHTML = '<tr><td colspan="6">Error loading book copies</td></tr>';
+  }
+}
+
 async function renderTransactions() {}

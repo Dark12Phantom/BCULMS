@@ -16,7 +16,7 @@
         <a href="./index.html" class="d-flex justify-content-center mb-5"
           ><img src="../icons/appIcon.png" alt="Logo"
         /></a>
-        <a class="nav-link mb-3 active" href="./index.html" aria-current="page">
+        <a class="nav-link mb-3" href="./index.html" aria-current="page">
           <p></p>
           <span class="icon">
             <i class="bi bi-grid-1x2"></i>
@@ -27,20 +27,20 @@
         <a
           class="nav-link mb-3"
           data-bs-toggle="collapse"
-          data-bs-target="#submenu"
+          data-bs-target="#submenuBookshelf"
           role="button"
           aria-expanded="false"
-          aria-controls="submenu"
+          aria-controls="submenuBookshelf"
         >
           <p></p>
           <span class="icon">
             <i class="bi bi-book"></i>
           </span>
-          <span class="description"
-            >Bookshelf <i class="bi bi-caret-down"></i
-          ></span>
+          <span class="description">
+            Bookshelf <i class="bi bi-caret-down"></i>
+          </span>
         </a>
-        <div class="sub-menu collapse mb-1" id="submenu">
+        <div class="sub-menu collapse mb-1" id="submenuBookshelf">
           <a href="./bookshelf-books.html" class="nav-link mb-2">
             <p></p>
             <span class="icon">
@@ -57,13 +57,39 @@
           </a>
         </div>
 
-        <a class="nav-link mb-3" href="./transactions.html">
+        <!-- Transactions -->
+        <a
+          class="nav-link mb-3"
+          data-bs-toggle="collapse"
+          data-bs-target="#submenuTransactions"
+          role="button"
+          aria-expanded="false"
+          aria-controls="submenuTransactions"
+        >
           <p></p>
           <span class="icon">
-            <i class="bi bi-person-badge"></i>
+            <i class="bi bi-person-lines-fill"></i>
           </span>
-          <span class="description">Transactions</span>
+          <span class="description">
+            Transactions <i class="bi bi-caret-down"></i>
+          </span>
         </a>
+        <div class="sub-menu collapse mb-1" id="submenuTransactions">
+          <a href="./transactions_borrow.html" class="nav-link mb-2">
+            <p></p>
+            <span class="icon">
+              <i class="bi bi-calendar-range-fill"></i>
+            </span>
+            <span class="description">Borrows</span>
+          </a>
+          <a href="./transaction_library.html" class="nav-link mb-2">
+            <p></p>
+            <span class="icon">
+              <i class="bi bi-database-fill-gear"></i>
+            </span>
+            <span class="description">Library</span>
+          </a>
+        </div>
 
         <a class="nav-link mb-3" href="./students.html">
           <p></p>
@@ -182,15 +208,15 @@
                 <hr />
                 <div class="d-grid gap-2">
                   <div class="d-grid gap-2 d-md-block">
-                    <a href="./bookshelf-books.html#addBookBtn" role="button" class="col btn btn-primary btn-sm">
+                    <button onclick="window.location.href = 'bookshelf-books.html?modal=addBookContent'" role="button" class="col btn btn-primary btn-sm">
                       Add Books
-                    </a>
+                    </button>
                     <button class="col btn btn-primary btn-sm" type="button" id="archiveBookBtn">
                       Archive Books
                     </button>
                   </div>
                   <div class="d-grid gap-2 d-md-block">
-                    <button class="col btn btn-primary btn-sm" type="button" id="addStudentRecordBtn">
+                    <button onclick="window.location.href = 'students.html?modal=addStudentContent'" class="col btn btn-primary btn-sm" role="button" id="addStudentRecordBtn">
                       Add a Student Record
                     </button>
                     <a href="./transactions.html" role="button" class="col btn btn-primary btn-sm">
@@ -210,9 +236,13 @@
     <script src="../js/main.js"></script>
     <script src="../js/sql-wasm.js"></script>
     <script src="../js/database-connection.js"></script>
+    <script src="../js/create-table.js"></script>
+    <script src="../js/database-operations.js"></script>
+    <script src="../js/frontend-operations.js"></script>
     <script src="../js/getFromDB.js"></script>
+    <script src="../js/insertIntoDB.js"></script>
     <script src="../js/dashboard.js"></script>
     <script src="../js/popup.js"></script>
-    <script src="../js/app.js"></script>
+    <script type="module" src="../js/app.js"></script>
   </body>
 </html>

@@ -1,5 +1,36 @@
 const departmentFilter = document.querySelector("#departmentFilter");
 const departmentLoader = document.querySelector("#departmentSelect");
+const courseLoader = document.querySelector("#courseSelect");
+
+async function loadCourses(){
+  if (!courseLoader) {
+    console.log("Course select not found");
+    return;
+  }
+
+  try {
+    const cresult = await getCourses();
+    console.log("courses (for select):", cresult);
+    courseLoader.innerHTML = "";
+
+    const placeholder = document.createElement("option");
+    placeholder.textContent = "Select Course";
+    placeholder.value = "";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    courseLoader.appendChild(placeholder);
+
+    (cresult.data || []).forEach((course) => {
+      const opt = document.createElement("option");
+      opt.value = course.course_id;
+      opt.textContent = course.name;
+      courseLoader.appendChild(opt);
+    });
+  } catch (error) {
+    console.error("Failed to load courses:", error);
+    courseLoader.innerHTML = `<option value="">Error loading</option>`;
+  }
+}
 
 async function selectDepartments() {
   if (!departmentFilter) {
@@ -40,7 +71,6 @@ async function loadDepartments(){
 
     departmentLoader.innerHTML = "";
 
-    // Optionally add a placeholder
     const placeholder = document.createElement("option");
     placeholder.textContent = "Select Department";
     placeholder.value = "";

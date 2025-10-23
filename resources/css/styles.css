@@ -19,7 +19,7 @@ nav{
   top: 0;
   left: 0;
   height: 100%;
-  width: 190px;
+  width: 200px;
   padding-top: 20px;
   transition: width 0.3s;
   display: flex;
@@ -36,7 +36,7 @@ nav{
   gap: 8px;
   padding: 10px 20px;
   color: #eede36;
-  width: 180px;
+  width: 190px;
   margin-left: 10px;
   border-radius: 10px 0 0 10px;
   transition: all 0.3s ease;
