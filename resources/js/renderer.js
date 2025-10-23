@@ -171,7 +171,7 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
     const copiesResult = await insertDB(
       "select",
       "book_copy",
-      "copy_id, book_id, status, condition, borrowed_date, returned_date, due_date",
+      "copy_id, book_id, status, condition",
       null
     );
     
@@ -187,27 +187,42 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
     
     const books = booksResult?.data || [];
     
-    // Create a map of book_id to title for quick lookup
+    // Create a map of book_id to title
     const bookTitles = {};
     books.forEach(book => {
       bookTitles[book.book_id] = book.title;
     });
     
-    // Get borrower information if needed (assuming you have a borrowers table)
-    // Adjust this based on your actual database schema
-    const borrowersResult = await insertDB(
+    // Get active borrows (where returned_date IS NULL)
+    const borrowsResult = await insertDB(
       "select",
-      "borrowers",
-      "copy_id, name",
-      "WHERE returned_date IS NULL" // Only active borrows
+      "transactions_borrow",
+      "copy_id, student_id",
+      "WHERE returned_date IS NULL"
     );
     
-    const borrowers = borrowersResult?.data || [];
+    const borrows = borrowsResult?.data || [];
     
-    // Create a map of copy_id to borrower name
-    const borrowerNames = {};
-    borrowers.forEach(borrower => {
-      borrowerNames[borrower.copy_id] = borrower.name;
+    // Create a map of copy_id to student_id for active borrows
+    const copyToStudent = {};
+    borrows.forEach(borrow => {
+      copyToStudent[borrow.copy_id] = borrow.student_id;
+    });
+    
+    // Get all students
+    const studentsResult = await insertDB(
+      "select",
+      "students",
+      "student_id, student_name",
+      null
+    );
+    
+    const students = studentsResult?.data || [];
+    
+    // Create a map of student_id to student_name
+    const studentNames = {};
+    students.forEach(student => {
+      studentNames[student.student_id] = student.student_name;
     });
 
     // Pagination
@@ -220,7 +235,10 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
         const tr = document.createElement("tr");
         const bookId = parseInt(copy.book_id, 10);
         const title = bookTitles[bookId] || "Unknown";
-        const borrowedBy = borrowerNames[copy.copy_id] || "—";
+        
+        // Get borrower name through copy_id -> student_id -> student_name
+        const studentId = copyToStudent[copy.copy_id];
+        const borrowedBy = studentId ? (studentNames[studentId] || "Unknown Student") : "—";
         
         tr.dataset.copyId = copy.copy_id;
         tr.innerHTML = `
