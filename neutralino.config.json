@@ -46,7 +46,10 @@
       "maximize": false,
       "hidden": false,
       "resizable": true,
-      "exitProcessOnClose": true
+      "exitProcessOnClose": true,
+      "nativeMenus": {
+        "default": false
+      }
     },
     "browser": {
       "globalVariables": {
@@ -67,8 +70,7 @@
       "width": 1366,
       "height": 768,
       "args": "--user-agent=\"Neutralinojs chrome mode\"",
-      "nativeBlockList": [
-      ]
+      "nativeBlockList": []
     }
   },
   "cli": {
@@ -79,10 +81,10 @@
     "binaryVersion": "6.2.0",
     "clientVersion": "6.2.0",
     "nativeFilesystem": {
-        "enabled": true,
-        "allowedPaths": [
-            "C:/Users/%userprofile%/Documents/BCULMS/data"
-        ]
+      "enabled": true,
+      "allowedPaths": [
+        "C:/Users/%userprofile%/Documents/BCULMS/data"
+      ]
     }
   },
   "permissions": {

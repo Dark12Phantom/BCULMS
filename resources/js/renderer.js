@@ -42,69 +42,6 @@ async function renderBooks(page = 1, rowsPerPage = 25) {
   await renderPager(books.length, rowsPerPage, page, "pager-bottom");
 }
 
-function bookContentLoader() {
-  document.addEventListener("DOMContentLoaded", () => {
-    const tbody = document.getElementById("booksTableBody");
-
-    // Create proper Bootstrap modal
-    const modalHTML = `
-    <div class="modal fade" id="bookContextModal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header bg-info text-white">
-            <h5 class="modal-title">Book Options</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body p-0">
-            <ul class="list-group list-group-flush mb-0">
-              <li class="list-group-item list-group-item-action" id="viewBook">View Details</li>
-              <li class="list-group-item list-group-item-action" id="editBook">Edit Details</li>
-              <li class="list-group-item list-group-item-action text-danger" id="deleteBook">Delete</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-
-    document.body.insertAdjacentHTML("beforeend", modalHTML);
-
-    const modalElement = document.getElementById("bookContextModal");
-    const modalInstance = new bootstrap.Modal(modalElement);
-    let selectedRow = null;
-
-    tbody.addEventListener("contextmenu", (e) => {
-      const row = e.target.closest("tr[data-book-id]");
-      if (!row) return;
-      e.preventDefault();
-      selectedRow = row;
-
-      modalInstance.show();
-    });
-
-    // Menu actions
-    modalElement.querySelector("#viewBook").onclick = () => {
-      const id = selectedRow.dataset.bookId;
-      showPopup("Book Details", `Book ID: ${id}`);
-      modalInstance.hide();
-    };
-
-    modalElement.querySelector("#editBook").onclick = () => {
-      const id = selectedRow.dataset.bookId;
-      showPopup("Edit Book", `Editing Book ID: ${id}`);
-      modalInstance.hide();
-    };
-
-    modalElement.querySelector("#deleteBook").onclick = () => {
-      const id = selectedRow.dataset.bookId;
-      if (confirm(`Delete book ID ${id}?`)) {
-        selectedRow.remove();
-      }
-      modalInstance.hide();
-    };
-  });
-}
-
 async function renderPager(totalRows, rowsPerPage, currentPage, pagerID) {
   const pager = document.getElementById(pagerID);
   if (!pager) return console.error("Pager element #pager not found");
@@ -158,11 +95,13 @@ async function renderPager(totalRows, rowsPerPage, currentPage, pagerID) {
 
   pager.appendChild(ul);
 }
+
 async function renderStudents() {}
 
 async function renderBookCopies(page = 1, rowsPerPage = 25) {
   const bookCopyTBody = document.querySelector("#bookCopiesTableBody");
-  if (!bookCopyTBody) return console.error("Table body #bookCopiesTableBody not found");
+  if (!bookCopyTBody)
+    return console.error("Table body #bookCopiesTableBody not found");
 
   bookCopyTBody.innerHTML = "";
 
@@ -174,9 +113,9 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
       "copy_id, book_id, status, condition",
       null
     );
-    
+
     const copies = copiesResult?.data || [];
-    
+
     // Get all books to map book titles
     const booksResult = await insertDB(
       "select",
@@ -184,15 +123,15 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
       "book_id, title",
       null
     );
-    
+
     const books = booksResult?.data || [];
-    
+
     // Create a map of book_id to title
     const bookTitles = {};
-    books.forEach(book => {
+    books.forEach((book) => {
       bookTitles[book.book_id] = book.title;
     });
-    
+
     // Get active borrows (where returned_date IS NULL)
     const borrowsResult = await insertDB(
       "select",
@@ -200,15 +139,15 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
       "copy_id, student_id",
       "WHERE returned_date IS NULL"
     );
-    
+
     const borrows = borrowsResult?.data || [];
-    
+
     // Create a map of copy_id to student_id for active borrows
     const copyToStudent = {};
-    borrows.forEach(borrow => {
+    borrows.forEach((borrow) => {
       copyToStudent[borrow.copy_id] = borrow.student_id;
     });
-    
+
     // Get all students
     const studentsResult = await insertDB(
       "select",
@@ -216,12 +155,12 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
       "student_id, student_name",
       null
     );
-    
+
     const students = studentsResult?.data || [];
-    
+
     // Create a map of student_id to student_name
     const studentNames = {};
-    students.forEach(student => {
+    students.forEach((student) => {
       studentNames[student.student_id] = student.student_name;
     });
 
@@ -235,11 +174,13 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
         const tr = document.createElement("tr");
         const bookId = parseInt(copy.book_id, 10);
         const title = bookTitles[bookId] || "Unknown";
-        
+
         // Get borrower name through copy_id -> student_id -> student_name
         const studentId = copyToStudent[copy.copy_id];
-        const borrowedBy = studentId ? (studentNames[studentId] || "Unknown Student") : "—";
-        
+        const borrowedBy = studentId
+          ? studentNames[studentId] || "Unknown Student"
+          : "—";
+
         tr.dataset.copyId = copy.copy_id;
         tr.innerHTML = `
           <td>${copy.copy_id || "&nbsp;"}</td>
@@ -252,16 +193,18 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
         bookCopyTBody.appendChild(tr);
       });
     } else {
-      bookCopyTBody.innerHTML = '<tr><td colspan="6">No book copies on record</td></tr>';
+      bookCopyTBody.innerHTML =
+        '<tr><td colspan="6">No book copies on record</td></tr>';
     }
 
     await renderPager(copies.length, rowsPerPage, page, "pager-top");
     await renderPager(copies.length, rowsPerPage, page, "pager-bottom");
-    
   } catch (error) {
     console.error("Failed to render book copies:", error);
-    bookCopyTBody.innerHTML = '<tr><td colspan="6">Error loading book copies</td></tr>';
+    bookCopyTBody.innerHTML =
+      '<tr><td colspan="6">Error loading book copies</td></tr>';
   }
 }
 
-async function renderTransactions() {}
+async function renderBorrowTransactions() {}
+async function renderLibraryTransactions() {}

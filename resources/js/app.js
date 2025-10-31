@@ -10,7 +10,7 @@ Neutralino.events.on("ready", async () => {
       await dashboardTotalBooks();
     } else if (path.endsWith("bookshelf-books.html")) {
       await renderBooks();
-      bookContentLoader();
+      await bookContentLoader();
       await selectDepartments();
       await loadDepartments();
 
@@ -23,8 +23,11 @@ Neutralino.events.on("ready", async () => {
 
     } else if (path.endsWith("bookshelf-copies.html")) {
       await renderBookCopies();
-    } else if (path.endsWith("transactions.html")) {
-      await renderTransactions();
+      await bookCopyModalLoader();
+    } else if (path.endsWith("transaction_borrow.html")) {
+      await renderBorrowTransactions();
+    } else if (path.endsWith("transaction_library.html")) {
+      await renderLibraryTransactions();
     } else if (path.endsWith("students.html")) {
       await renderStudents();
       await selectDepartments();

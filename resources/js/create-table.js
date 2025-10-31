@@ -63,17 +63,4 @@ function createDB() {
 	PRIMARY KEY("transaction_id" AUTOINCREMENT),
 	FOREIGN KEY("copy_id") REFERENCES "book_copy"("copy_id"),
 	FOREIGN KEY("student_id") REFERENCES "students"("student_id"));`);
-
-  db.run(`INSERT OR IGNORE INTO "department" ("department_id","name") VALUES 
-    ('CBA','College of Business Administration'),
-    ('CCJE','College of Criminal Justice Education'),
-    ('CoE','College of Engineering'),
-    ('CNSM','College of Nursing and School of Midwifery'),
-    ('ES','Elementary School'),
-    ('JHS','Junior High School'),
-    ('SHS','Senior High School'),
-    ('CTELA','College of Teacher Education and Liberal Arts'),
-    ('CHTM','College of Hospitality and Tourism Management'),
-    ('GS','Graduate School'),
-    ('RD','Research Department');`);
 }
