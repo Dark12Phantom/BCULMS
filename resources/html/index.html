@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="../css/bootstrap-icons.css" />
   </head>
   <body>
+    <div id="loader">
+      <div class="loader-box">
+        <p id="loader-text">Loading assets...</p>
+      </div>
+    </div>
     <!-- SIDEBAR -->
     <div class="sidebar">
       <nav class="nav flex-column">
@@ -208,18 +213,35 @@
                 <hr />
                 <div class="d-grid gap-2">
                   <div class="d-grid gap-2 d-md-block">
-                    <button onclick="window.location.href = 'bookshelf-books.html?modal=addBookContent'" role="button" class="col btn btn-primary btn-sm">
+                    <button
+                      onclick="window.location.href = 'bookshelf-books.html?modal=addBookContent'"
+                      role="button"
+                      class="col btn btn-primary btn-sm"
+                    >
                       Add Books
                     </button>
-                    <button class="col btn btn-primary btn-sm" type="button" id="archiveBookBtn">
+                    <button
+                      class="col btn btn-primary btn-sm"
+                      type="button"
+                      id="archiveBookBtn"
+                    >
                       Archive Books
                     </button>
                   </div>
                   <div class="d-grid gap-2 d-md-block">
-                    <button onclick="window.location.href = 'students.html?modal=addStudentContent'" class="col btn btn-primary btn-sm" role="button" id="addStudentRecordBtn">
+                    <button
+                      onclick="window.location.href = 'students.html?modal=addStudentContent'"
+                      class="col btn btn-primary btn-sm"
+                      role="button"
+                      id="addStudentRecordBtn"
+                    >
                       Add a Student Record
                     </button>
-                    <a href="./transactions.html" role="button" class="col btn btn-primary btn-sm">
+                    <a
+                      href="./transactions.html"
+                      role="button"
+                      class="col btn btn-primary btn-sm"
+                    >
                       Transactions
                     </a>
                   </div>
@@ -245,6 +267,6 @@
     <script src="../js/insertIntoDB.js"></script>
     <script src="../js/dashboard.js"></script>
     <script src="../js/popup.js"></script>
-    <script type="module" src="../js/app.js"></script>
+    <script src="../js/app.js"></script>
   </body>
 </html>

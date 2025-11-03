@@ -6,3 +6,7 @@ async function dashboardTotalBooks(){
 
     totalBooks.innerText = total;
 }
+
+async function dashboardTotalStudents(){
+    const totalActiveStudents = document.getElementById('totalStudents');
+}

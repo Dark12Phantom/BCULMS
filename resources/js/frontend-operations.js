@@ -23,24 +23,23 @@ async function getTransactions(whereClause = null) {
 }
 
 async function getBookCopies(whereClause = null) {
-  return await insertDB("select", "book_copy", "*", whereClause);
+  const result = await insertDB("select", "book_copy", "*", whereClause);
+  return result.data || [];
 }
 
 async function getBookCopyNumber() {
   const result = await insertDB(
     "select",
     "book_copy",
-    "book_id, COUNT(*) as totalCopies",
-    "GROUP BY book_id"
+    "book_id",
+    null
   );
   
-  // Convert array of results into an object for easy lookup
   const copyMap = {};
   if (result && result.data && Array.isArray(result.data)) {
     result.data.forEach(row => {
-      // Convert book_id to number for consistent lookup
       const bookId = parseInt(row.book_id, 10);
-      copyMap[bookId] = row.totalCopies;
+      copyMap[bookId] = (copyMap[bookId] || 0) + 1; // Increment count
     });
   }
   

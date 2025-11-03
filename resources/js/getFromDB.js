@@ -39,10 +39,31 @@ async function selectDepartments() {
   }
   try {
     const result = await handleSelect("department");
-    console.log("departments:", result);
 
     departmentFilter.innerHTML = "";
 
+    // Add "All Departments" option
+    const allLi = document.createElement("li");
+    const allA = document.createElement("a");
+    allA.classList.add("dropdown-item");
+    allA.href = "#";
+    allA.textContent = "All Departments";
+    allA.dataset.value = "";
+    allA.addEventListener("click", async (e) => {
+      e.preventDefault();
+      currentDepartmentFilter = null;
+      await renderBooks(1); // Reset to page 1 with no filter
+      updateFilterButtonText("Filter"); // Reset button text
+    });
+    allLi.appendChild(allA);
+    departmentFilter.appendChild(allLi);
+
+    // Add separator
+    const separator = document.createElement("li");
+    separator.innerHTML = '<hr class="dropdown-divider">';
+    departmentFilter.appendChild(separator);
+
+    // Add department options
     (result.data || []).forEach((dept) => {
       const li = document.createElement("li");
       const a = document.createElement("a");
@@ -50,9 +71,19 @@ async function selectDepartments() {
       a.href = "#";
       a.textContent = dept.name;
       a.dataset.value = dept.department_id;
+      
+      // Add click event to filter books
+      a.addEventListener("click", async (e) => {
+        e.preventDefault();
+        currentDepartmentFilter = dept.department_id;
+        await renderBooks(1); // Reset to page 1 with filter
+        updateFilterButtonText(dept.name); // Update button text
+      });
+      
       li.appendChild(a);
       departmentFilter.appendChild(li);
     });
+    
     return result;
   } catch (error) {
     console.error("Failed to get departments:", error);
@@ -67,7 +98,6 @@ async function loadDepartments(){
 
   try {
     const result = await handleSelect("department");
-    console.log("departments (for select):", result);
 
     departmentLoader.innerHTML = "";
 
@@ -92,9 +122,13 @@ async function loadDepartments(){
 
 async function getAllBooks() {
   try {
-    const result = await getBooks({ status: "In Library" });
-    const books = result.data || []; 
-    console.log("Books:", books);
+    // Apply department filter if set
+    const whereClause = currentDepartmentFilter 
+      ? { department_id: currentDepartmentFilter, status: "In Library" } 
+      : { status: "In Library" };
+    
+    const result = await getBooks(whereClause);
+    const books = result.data || [];
 
     for (let book of books) {
       const copiesResult = await getBookCopyNumber({ book_id: book.book_id });

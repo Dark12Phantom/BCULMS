@@ -93,75 +93,84 @@ async function updateBook(bookData, bookId) {
 }
 
 async function updateBookCopies(bookId, newNumberOfCopies) {
-  const result = await insertDB("select", "book_copy", "*", { book_id: bookId });
-  
-  // Ensure we have an array
-  const existingCopies = Array.isArray(result) ? result : (result.rows || []);
+  // Get existing copies
+  const existingCopies = await getBookCopies({ book_id: bookId });
   const currentCount = existingCopies.length;
-
   if (newNumberOfCopies === currentCount) {
     return { copiesChanged: false };
   }
+  // First, fetch the book to get its department
+  const bookQuery = db.prepare("SELECT department_id FROM books WHERE book_id = ?");
+  bookQuery.bind([bookId]);
+  
+  let department = "UNKNOWN";
+  if (bookQuery.step()) {
+    const row = bookQuery.getAsObject();
+    department = row.department_id || "UNKNOWN";
+  }
+  bookQuery.free();
 
-  // Get book info for department
-  const bookResult = await insertDB("select", "books", "*", { book_id: bookId });
-  const bookInfo = Array.isArray(bookResult) ? bookResult : (bookResult.rows || []);
-  const department = bookInfo[0]?.department_id || "UNKNOWN";
+  let copiesChanged = false;
 
   if (newNumberOfCopies > currentCount) {
-    // Add new copies (append to existing)
+    // Add new copies
     const copiesToAdd = newNumberOfCopies - currentCount;
-
-    for (let i = 1; i <= copiesToAdd; i++) {
+    
+    for (let i = 0; i < copiesToAdd; i++) {
+      const copyNumber = currentCount + i + 1;
+      const copyId = generateCopyId(department, bookId, copyNumber);
+      
       const copyData = {
-        copy_id: generateCopyId(department, bookId, currentCount + i),
+        copy_id: copyId,
         book_id: bookId,
         status: "Available",
         condition: "Good",
         borrowed_date: null,
         returned_date: null,
-        due_date: null
+        due_date: null,
       };
+
       await insertDB("insert", "book_copy", copyData);
     }
-    
-    return { copiesChanged: true, copiesAdded: copiesToAdd };
-  } else {
-    // Remove copies - delete the highest numbered ones
+    copiesChanged = true;
+
+  } else if (newNumberOfCopies < currentCount) {
+    // Remove copies (starting from the highest copy numbers)
     const copiesToRemove = currentCount - newNumberOfCopies;
-    
-    // Sort all copies by copy number (descending - highest first)
     const sortedCopies = existingCopies.sort((a, b) => {
+      // Sort by copy number descending
       const numA = parseInt(a.copy_id.split('-C')[1]);
       const numB = parseInt(b.copy_id.split('-C')[1]);
-      return numB - numA; // Descending order
+      return numB - numA;
     });
 
-    // Check if the highest numbered copies can be deleted (must be Available)
-    const copiesToDelete = sortedCopies.slice(0, copiesToRemove);
-    const unavailableCopies = copiesToDelete.filter(copy => copy.status !== "Available");
-    
-    if (unavailableCopies.length > 0) {
-      const unavailableIds = unavailableCopies.map(c => c.copy_id).join(', ');
-      throw new Error(
-        `Cannot remove ${copiesToRemove} copies. Some of the highest numbered copies are currently borrowed: ${unavailableIds}`
-      );
-    }
-    
-    // Delete the highest numbered copies
     for (let i = 0; i < copiesToRemove; i++) {
-      await insertDB("delete", "book_copy", null, { copy_id: sortedCopies[i].copy_id });
+      await insertDB("delete", "book_copy", null, { 
+        copy_id: sortedCopies[i].copy_id 
+      });
     }
-    
-    return { copiesChanged: true, copiesRemoved: copiesToRemove };
+    copiesChanged = true;
   }
+
+  return { copiesChanged };
 }
 
 async function deleteBook(bookId) {
-  const copies = await insertDB("select", "book_copy", "*", {
+  const copiesResult = await insertDB("select", "book_copy", "*", {
     book_id: bookId,
   });
-  const borrowedCopies = copies.filter((copy) => copy.status !== "Available");
+  const copies = copiesResult.data || [];
+
+  console.log("All copies:", copies);
+  if (copies.length > 0) {
+    console.log("First copy keys:", Object.keys(copies[0]));
+    console.log("First copy:", copies[0]);
+  }
+
+  const borrowedCopies = copies.filter((copy) => {
+    const status = (copy.status || "").toString().trim().toLowerCase();
+    return status !== "available" && status !== "";
+  });
 
   if (borrowedCopies.length > 0) {
     throw new Error(

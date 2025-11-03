@@ -1,4 +1,4 @@
-function createDB() {
+async function createDB() {
   db = new SQL.Database();
 
   db.run(`CREATE TABLE IF NOT EXISTS "archived_books" (

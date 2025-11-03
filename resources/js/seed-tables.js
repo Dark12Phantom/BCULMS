@@ -1,4 +1,4 @@
-function seedDepartments() {
+async function seedDepartments() {
   db.run(`INSERT OR IGNORE INTO "department" ("department_id","name") VALUES 
     ('CBA','College of Business Administration'),
     ('CCJE','College of Criminal Justice Education'),
@@ -13,7 +13,7 @@ function seedDepartments() {
     ('RD','Research Department');`);
 }
 
-function seedCourses() {
+async function seedCourses() {
     // CBA Courses
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
       ('BSBA-FM','Bachelor of Science in Business Administration Major in Financial Management','CBA'),

@@ -111,6 +111,7 @@ async function handleInsert(table, data) {
     throw error;
   }
 }
+
 async function handleUpdate(table, data, whereClause) {
   if (!data || typeof data !== "object") {
     throw new Error("Update data must be an object");

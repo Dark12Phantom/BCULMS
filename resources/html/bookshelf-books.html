@@ -171,9 +171,23 @@
                 />
               </div>
               <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Date Format</span>
+                <select
+                  name="date_format"
+                  id="dateFormatSelect"
+                  class="form-control"
+                  required
+                >
+                  <option value="full">Full Date (YYYY-MM-DD)</option>
+                  <option value="month">Month & Year (YYYY-MM)</option>
+                  <option value="year">Year Only (YYYY)</option>
+                </select>
+              </div>
+              <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Publication Date</span>
                 <input
                   name="publication_date"
+                  id="publicationDateInput"
                   type="date"
                   class="form-control"
                   required
@@ -181,7 +195,7 @@
               </div>
               <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text">Type</span>
-                <select name="type" type="date" class="form-control" required>
+                <select name="type" class="form-control" required>
                   <option value="Book">Book</option>
                   <option value="Research Paper">Research Paper</option>
                 </select>
@@ -222,7 +236,76 @@
           </div>
         </div>
       </div>
+
       <script>
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.toISOString().slice(0, 7); // YYYY-MM
+        const currentDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
+
+        // Set initial max date for the date input
+        const dateInput = document.getElementById("publicationDateInput");
+        dateInput.max = currentDate;
+
+        // Add validation for year input
+        dateInput.addEventListener("input", function () {
+          if (this.type === "number") {
+            const yearValue = parseInt(this.value);
+            if (yearValue > currentYear) {
+              this.value = currentYear;
+            }
+            if (yearValue < 1000) {
+              this.value = 1000;
+            }
+          }
+        });
+
+        // Prevent typing future years
+        dateInput.addEventListener("blur", function () {
+          if (this.type === "number") {
+            const yearValue = parseInt(this.value);
+            if (yearValue > currentYear) {
+              this.value = currentYear;
+              showModalAlert(
+                `Publication year cannot be in the future. Maximum year is ${currentYear}.`,
+                "warning"
+              );
+            }
+          }
+        });
+
+        document
+          .getElementById("dateFormatSelect")
+          .addEventListener("change", function () {
+            const format = this.value;
+
+            switch (format) {
+              case "full":
+                dateInput.type = "date";
+                dateInput.placeholder = "YYYY-MM-DD";
+                dateInput.max = currentDate;
+                dateInput.removeAttribute("min");
+                dateInput.step = "";
+                break;
+              case "month":
+                dateInput.type = "month";
+                dateInput.placeholder = "YYYY-MM";
+                dateInput.max = currentMonth;
+                dateInput.removeAttribute("min");
+                dateInput.step = "";
+                break;
+              case "year":
+                dateInput.type = "number";
+                dateInput.placeholder = "YYYY";
+                dateInput.min = "1000";
+                dateInput.max = currentYear.toString();
+                dateInput.step = "1";
+                break;
+            }
+
+            dateInput.value = "";
+          });
+        
         document.addEventListener("DOMContentLoaded", () => {
           const params = new URLSearchParams(window.location.search);
           const modalId = params.get("modal");
@@ -247,10 +330,10 @@
     <script src="../js/database-operations.js"></script>
     <script src="../js/frontend-operations.js"></script>
     <script src="../js/library-operations.js"></script>
+    <script src="../js/filter.js"></script>
     <script src="../js/getFromDB.js"></script>
     <script src="../js/insertIntoDB.js"></script>
     <script src="../js/renderer.js"></script>
-    <script src="../js/filter.js"></script>
     <script src="../js/search.js"></script>
     <script src="../js/popup.js"></script>
     <script src="../js/app.js"></script>
