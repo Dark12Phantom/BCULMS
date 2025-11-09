@@ -2,7 +2,47 @@ function addBookPopup() {}
 
 function archiveBookPopup() {}
 
-function addStudentPopup() {}
+async function addStudentPopup() {
+  await renderStudents();
+
+  const params = new URLSearchParams(window.location.search);
+  const modalId = params.get("modal");
+
+  if (modalId) {
+    const modalEl = document.getElementById(modalId);
+    if (modalEl) {
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    }
+  }
+
+  const addStudentModal = document.getElementById("addStudentContent");
+  if (addStudentModal) {
+    addStudentModal.addEventListener("show.bs.modal", async function () {
+      const courseSelect = document.getElementById("courseSelect");
+      try {
+        const result = await getCourses();
+        const courses = result.data || [];
+
+        courseSelect.innerHTML = '<option value="">Select Course</option>';
+
+        courses.forEach((course) => {
+          const option = document.createElement("option");
+          option.value = course.course_id;
+          option.textContent = course.name;
+          courseSelect.appendChild(option);
+        });
+
+        courseSelect.disabled = false;
+      } catch (error) {
+        console.error("Error loading courses:", error);
+        courseSelect.innerHTML =
+          '<option value="">Error loading courses</option>';
+        courseSelect.disabled = true;
+      }
+    });
+  }
+}
 
 function addBookPopup() {}
 
@@ -204,7 +244,7 @@ async function showBookPopup(action, id) {
 
       const existingCopies = await getBookCopies({ book_id: id });
       const currentCopies = existingCopies.length;
-      
+
       openModal(
         "Edit Book",
         `

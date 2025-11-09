@@ -18,7 +18,7 @@ async function seedCourses() {
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
       ('BSBA-FM','Bachelor of Science in Business Administration Major in Financial Management','CBA'),
       ('BSBA-HRDM','Bachelor of Science in Business Administration Major in Human Resource Development Management','CBA'),
-      ('BSCS','Bachelor of Science in Cmputer Sciebce','CBA'),
+      ('BSCS','Bachelor of Science in Computer Science','CBA'),
       ('BSOA','Bachelor of Science in Office Administration','CBA'),
       ('BSPA','Bachelor of Science in Public Administration','CBA')`
     );

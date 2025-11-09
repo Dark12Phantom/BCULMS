@@ -145,7 +145,7 @@
       </button>
 
       <div class="modal fade" id="addBookContent" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content">
             <div class="modal-header bg-info text-white">
               <h5 class="modal-title">Add Book</h5>
@@ -156,69 +156,111 @@
                 aria-label="Close"
               ></button>
             </div>
+            <div class="modal-header bg-light border-bottom">
+              <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" name="addMode" id="singleMode" value="single" checked>
+                <label class="btn btn-outline-primary btn-sm" for="singleMode">Single Book</label>
+                <input type="radio" class="btn-check" name="addMode" id="bulkMode" value="bulk">
+                <label class="btn btn-outline-primary btn-sm" for="bulkMode">Bulk Add</label>
+              </div>
+              <div class="form-text ms-auto">
+                <small id="modeHelpText">Add books one at a time</small>
+              </div>
+            </div>
             <div class="modal-body">
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Title</span>
-                <input name="title" type="text" class="form-control" required />
+              <!-- Single Book Mode -->
+              <div id="singleBookMode">
+                <div class="input-group input-group-sm mb-3">
+                  <span class="input-group-text">Title</span>
+                  <input name="title" type="text" class="form-control" required />
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                  <span class="input-group-text">Author</span>
+                  <input
+                    name="author"
+                    type="text"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                  <span class="input-group-text">Date Format</span>
+                  <select
+                    name="date_format"
+                    id="dateFormatSelect"
+                    class="form-control"
+                    required
+                  >
+                    <option value="full">Full Date (YYYY-MM-DD)</option>
+                    <option value="month">Month & Year (YYYY-MM)</option>
+                    <option value="year">Year Only (YYYY)</option>
+                  </select>
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                  <span class="input-group-text">Publication Date</span>
+                  <input
+                    name="publication_date"
+                    id="publicationDateInput"
+                    type="date"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                  <span class="input-group-text">Type</span>
+                  <select name="type" class="form-control" required>
+                    <option value="Book">Book</option>
+                    <option value="Research Paper">Research Paper</option>
+                  </select>
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                  <span class="input-group-text">Department</span>
+                  <select
+                    name="department_id"
+                    id="departmentSelect"
+                    class="form-control"
+                    required
+                  >
+                    <option value="">Loading...</option>
+                  </select>
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                  <span class="input-group-text">Copies</span>
+                  <input
+                    name="copies"
+                    type="number"
+                    class="form-control"
+                    required
+                  />
+                </div>
               </div>
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Author</span>
-                <input
-                  name="author"
-                  type="text"
-                  class="form-control"
-                  required
-                />
-              </div>
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Date Format</span>
-                <select
-                  name="date_format"
-                  id="dateFormatSelect"
-                  class="form-control"
-                  required
-                >
-                  <option value="full">Full Date (YYYY-MM-DD)</option>
-                  <option value="month">Month & Year (YYYY-MM)</option>
-                  <option value="year">Year Only (YYYY)</option>
-                </select>
-              </div>
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Publication Date</span>
-                <input
-                  name="publication_date"
-                  id="publicationDateInput"
-                  type="date"
-                  class="form-control"
-                  required
-                />
-              </div>
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Type</span>
-                <select name="type" class="form-control" required>
-                  <option value="Book">Book</option>
-                  <option value="Research Paper">Research Paper</option>
-                </select>
-              </div>
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Department</span>
-                <select
-                  name="department_id"
-                  id="departmentSelect"
-                  class="form-control"
-                  required
-                >
-                  <option value="">Loading...</option>
-                </select>
-              </div>
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text">Copies</span>
-                <input
-                  name="copies"
-                  type="number"
-                  class="form-control"
-                  required
-                />
+
+              <!-- Bulk Add Mode -->
+              <div id="bulkBookMode" style="display: none;">
+                <div class="alert alert-info">
+                  <h6><i class="bi bi-info-circle"></i> Bulk Add Instructions</h6>
+                  <p class="mb-2">Enter book details in the following format, one book per line:</p>
+                  <code>Title | Author | Publication Date | Type | Department | Copies</code>
+                  <p class="mt-2 mb-0"><strong>Example:</strong></p>
+                  <code>Introduction to Programming | John Doe | 2023-01-15 | Book | CS | 3</code>
+                </div>
+                <div class="mb-3">
+                  <label for="bulkBooksTextarea" class="form-label">Book Entries</label>
+                  <textarea 
+                    id="bulkBooksTextarea" 
+                    class="form-control" 
+                    rows="10" 
+                    placeholder="Enter books, one per line...&#10;Title | Author | Date | Type | Department | Copies&#10;&#10;Example:&#10;Introduction to Programming | John Doe | 2023-01-15 | Book | CS | 3&#10;Data Structures | Jane Smith | 2022-06-20 | Book | CS | 2"
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="bulkDateFormat" class="form-label">Date Format</label>
+                  <select id="bulkDateFormat" class="form-control">
+                    <option value="full">Full Date (YYYY-MM-DD)</option>
+                    <option value="month">Month & Year (YYYY-MM)</option>
+                    <option value="year">Year Only (YYYY)</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -231,6 +273,9 @@
               </button>
               <button type="button" class="btn btn-primary" id="saveBookBtn">
                 Save Book
+              </button>
+              <button type="button" class="btn btn-success" id="saveBulkBooksBtn" style="display: none;">
+                Save Books
               </button>
             </div>
           </div>
@@ -305,6 +350,38 @@
 
             dateInput.value = "";
           });
+
+        // Mode switching functionality
+        function switchAddMode(mode) {
+          const singleMode = document.getElementById('singleBookMode');
+          const bulkMode = document.getElementById('bulkBookMode');
+          const saveBookBtn = document.getElementById('saveBookBtn');
+          const saveBulkBtn = document.getElementById('saveBulkBooksBtn');
+          const helpText = document.getElementById('modeHelpText');
+
+          if (mode === 'bulk') {
+            singleMode.style.display = 'none';
+            bulkMode.style.display = 'block';
+            saveBookBtn.style.display = 'none';
+            saveBulkBtn.style.display = 'block';
+            helpText.textContent = 'Add multiple books at once';
+          } else {
+            singleMode.style.display = 'block';
+            bulkMode.style.display = 'none';
+            saveBookBtn.style.display = 'block';
+            saveBulkBtn.style.display = 'none';
+            helpText.textContent = 'Add books one at a time';
+          }
+        }
+
+        // Add event listeners for mode radio buttons
+        document.getElementById('singleMode').addEventListener('change', function() {
+          if (this.checked) switchAddMode('single');
+        });
+
+        document.getElementById('bulkMode').addEventListener('change', function() {
+          if (this.checked) switchAddMode('bulk');
+        });
         
         document.addEventListener("DOMContentLoaded", () => {
           const params = new URLSearchParams(window.location.search);
@@ -317,6 +394,11 @@
               modal.show();
             }
           }
+
+          // Add event listener for bulk save button
+          document.getElementById('saveBulkBooksBtn').addEventListener('click', async function() {
+            await addBooksToDB();
+          });
         });
       </script>
     </main>

@@ -96,7 +96,72 @@ async function renderPager(totalRows, rowsPerPage, currentPage, pagerID) {
   pager.appendChild(ul);
 }
 
-async function renderStudents() {}
+async function renderStudents(page = 1, rowsPerPage = 25) {
+  const studentTBody = document.querySelector("#studentsTableBody");
+  if (!studentTBody) return console.error("Table body not found");
+
+  studentTBody.innerHTML = ""; // Clear existing rows
+
+  try {
+    // Get all students
+    const studentsResult = await getStudents();
+    console.log("Students result:", studentsResult);
+    const students = studentsResult?.data || [];
+
+    // Get all courses and create a map
+    const coursesResult = await getCourses();
+    const courses = coursesResult?.data || [];
+    const courseMap = {};
+    courses.forEach(course => {
+      courseMap[course.course_id] = { 
+        name: course.name, 
+        department_id: course.department_id 
+      };
+    });
+
+    // Get all departments and create a map
+    const departmentsResult = await getDepartments();
+    const departments = departmentsResult?.data || [];
+    const departmentMap = {};
+    departments.forEach(dept => {
+      departmentMap[dept.department_id] = dept.name;
+    });
+
+    // Pagination
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageRows = students.slice(start, end);
+
+    if (pageRows.length > 0) {
+      pageRows.forEach(student => {
+        const tr = document.createElement("tr");
+        const courseInfo = courseMap[student.course_id] || { name: 'Unknown', department_id: '?' };
+        const departmentName = departmentMap[courseInfo.department_id] || 'Unknown';
+
+        tr.innerHTML = `
+          <td>${student.student_id}</td>
+          <td>${student.student_name}</td>
+          <td>${student.student_year}</td>
+          <td>${courseInfo.name}</td>
+          <td>${departmentName}</td>
+          <td><span class="badge bg-success">${student.status}</span></td>
+          <td>${student.date_borrowed || 'N/A'}</td>
+        `;
+        studentTBody.appendChild(tr);
+      });
+    } else {
+      studentTBody.innerHTML = '<tr><td colspan="7">No students on record</td></tr>';
+    }
+
+    // Render pagination
+    await renderPager(students.length, rowsPerPage, page, "pager-top");
+    await renderPager(students.length, rowsPerPage, page, "pager-bottom");
+
+  } catch (error) {
+    console.error("Failed to render students:", error);
+    studentTBody.innerHTML = '<tr><td colspan="7">Error loading students</td></tr>';
+  }
+}
 
 async function renderBookCopies(page = 1, rowsPerPage = 25) {
   const bookCopyTBody = document.querySelector("#bookCopiesTableBody");

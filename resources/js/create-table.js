@@ -53,7 +53,7 @@ async function createDB() {
 	PRIMARY KEY("student_id"),
 	FOREIGN KEY("course_id") REFERENCES "course"("course_id"));`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS "transactions" (
+  db.run(`CREATE TABLE IF NOT EXISTS "transactions_borrow" (
 	"transaction_id"	INTEGER NOT NULL,
 	"student_id"	TEXT NOT NULL,
 	"copy_id"	TEXT NOT NULL,
@@ -63,4 +63,12 @@ async function createDB() {
 	PRIMARY KEY("transaction_id" AUTOINCREMENT),
 	FOREIGN KEY("copy_id") REFERENCES "book_copy"("copy_id"),
 	FOREIGN KEY("student_id") REFERENCES "students"("student_id"));`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS "transactions_library" (
+	"transaction_id"	INTEGER NOT NULL,
+	"transaction_name"	TEXT NOT NULL,
+	"transaction_type"	TEXT NOT NULL,
+	"made_by"	TEXT NOT NULL,
+	"date"	TEXT NOT NULL,
+	PRIMARY KEY("transaction_id" AUTOINCREMENT));`);
 }
