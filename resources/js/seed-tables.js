@@ -1,28 +1,35 @@
-async function seedDepartments() {
-  db.run(`INSERT OR IGNORE INTO "department" ("department_id","name") VALUES 
-    ('CBA','College of Business Administration'),
-    ('CCJE','College of Criminal Justice Education'),
-    ('CoE','College of Engineering'),
-    ('CNSM','College of Nursing and School of Midwifery'),
-    ('ES','Elementary School'),
-    ('JHS','Junior High School'),
-    ('SHS','Senior High School'),
-    ('CTELA','College of Teacher Education and Liberal Arts'),
-    ('CHTM','College of Hospitality and Tourism Management'),
-    ('GS','Graduate School'),
-    ('RD','Research Department');`);
-}
+/**
+ * Class seeding initial tables for departments and courses.
+ */
+class DatabaseSeeder {
+  /**
+   * Seed base departments records.
+   */
+  async seedDepartments() {
+    db.run(`INSERT OR IGNORE INTO "department" ("department_id","name") VALUES 
+      ('CBA','College of Business Administration'),
+      ('CCJE','College of Criminal Justice Education'),
+      ('CoE','College of Engineering'),
+      ('CNSM','College of Nursing and School of Midwifery'),
+      ('ES','Elementary School'),
+      ('JHS','Junior High School'),
+      ('SHS','Senior High School'),
+      ('CTELA','College of Teacher Education and Liberal Arts'),
+      ('CHTM','College of Hospitality and Tourism Management'),
+      ('GS','Graduate School'),
+      ('RD','Research Department');`);
+  }
 
-async function seedCourses() {
-    // CBA Courses
+  /**
+   * Seed base courses across departments.
+   */
+  async seedCourses() {
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
       ('BSBA-FM','Bachelor of Science in Business Administration Major in Financial Management','CBA'),
       ('BSBA-HRDM','Bachelor of Science in Business Administration Major in Human Resource Development Management','CBA'),
       ('BSCS','Bachelor of Science in Computer Science','CBA'),
       ('BSOA','Bachelor of Science in Office Administration','CBA'),
-      ('BSPA','Bachelor of Science in Public Administration','CBA')`
-    );
-    // CTELA Courses
+      ('BSPA','Bachelor of Science in Public Administration','CBA')`);
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
       ('BEED','Bachelor of Elementary Education','CTELA'),
       ('BSED-ENG','Bachelor of Secondary Education Major in English','CTELA'),
@@ -34,29 +41,19 @@ async function seedCourses() {
       ('BPED','Bachelor of Physical Education','CTELA'),
       ('BECE','Bachelor of Early Childhood Education','CTELA'),
       ('ABE','Bachelor of Arts in English','CTELA'),
-      ('ABPS','Bachelor of Arts in Political Science','CTELA')`
-    );
-    // CHTM Courses
+      ('ABPS','Bachelor of Arts in Political Science','CTELA')`);
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
       ('AHM','Associate in Hospitality Management','CHTM'),
       ('BSHM','Bachelor of Science in Hospitality Management','CHTM'),
-      ('BSTM','Bachelor of Science in Tourism Management','CHTM')`
-    );
-    // CoE Courses
+      ('BSTM','Bachelor of Science in Tourism Management','CHTM')`);
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
       ('BSCE','Bachelor of Science in Civil Engineering','CoE'),
-      ('BSGE','Bachelor of Science in Geodetic Engineering','CoE')`
-    );
-    // CCJE Courses
+      ('BSGE','Bachelor of Science in Geodetic Engineering','CoE')`);
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
-      ('BSCRIM','Bachelor of Science in Criminology','CCJE')`
-    );
-    // CNSM Courses
+      ('BSCRIM','Bachelor of Science in Criminology','CCJE')`);
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
       ('BSN','Bachelor of Science in Nursing','CNSM'),
-      ('DIPMID','Diploma in Midwifery','CNSM')`
-    );
-    // GS Courses
+      ('DIPMID','Diploma in Midwifery','CNSM')`);
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
       ('PhDAS','Doctor of Philosophy in Administration and Supervision','GS'),
       ('Ed.D Educ Mgt','Doctor of Education in Educational Management','GS'),
@@ -69,12 +66,20 @@ async function seedCourses() {
       ('MAEd-Pre-Elem','Master of Arts in Pre-Elementary Education','GS'),
       ('MAHE','Master of Arts in Home Economics','GS'),
       ('MBA','Master in Business Administration','GS'),
-      ('MPA','Master in Public Administration','GS')`
-    );
-    // ES, JHS, SHS Courses
+      ('MPA','Master in Public Administration','GS')`);
     db.run(`INSERT OR IGNORE INTO "course" ("course_id","name","department_id") VALUES 
       ('ELEMENTARY','Elementary Level','ES'),
       ('JUNIOR HIGH','Junior High School Level','JHS'),
-      ('SENIOR HIGH','Senior High School Level','SHS')`
-    );
+      ('SENIOR HIGH','Senior High School Level','SHS')`);
+  }
+}
+
+const databaseSeeder = new DatabaseSeeder();
+
+async function seedDepartments() { return databaseSeeder.seedDepartments(); }
+async function seedCourses() { return databaseSeeder.seedCourses(); }
+if (typeof window !== "undefined") {
+  window.BCULMS = window.BCULMS || {};
+  window.BCULMS.DatabaseSeeder = DatabaseSeeder;
+  window.BCULMS.databaseSeeder = databaseSeeder;
 }
