@@ -53,18 +53,9 @@ async function addBookToDB() {
     const bsModal = bootstrap.Modal.getInstance(modal);
     if (bsModal) bsModal.hide();
 
-    // Show success confirmation modal with reload option
-    showConfirmationModal(
-      "Success",
-      `Book "${bookData.title}" with ${numberOfCopies} copy/copies has been added successfully. Reload page to see changes?`,
-      () => {
-        window.location.reload();
-      },
-      () => {
-        // Reset inputs if they choose not to reload
-        modal.querySelectorAll('input, select').forEach(el => (el.value = ""));
-      }
-    );
+    await renderBooks(1);
+    showModalAlert(`Book "${bookData.title}" with ${numberOfCopies} copy/copies has been added successfully.`, "success");
+    modal.querySelectorAll('input, select').forEach(el => (el.value = ""));
 
   } catch (error) {
     console.error("Error adding book:", error);
@@ -222,17 +213,9 @@ async function addBooksToDB() {
     }
 
     const messageType = results.failed > 0 ? "warning" : "success";
-    showConfirmationModal(
-      "Bulk Add Results",
-      message,
-      () => {
-        window.location.reload();
-      },
-      () => {
-        // Clear textarea if they choose not to reload
-        textarea.value = "";
-      }
-    );
+    await renderBooks(1);
+    showModalAlert(message, messageType);
+    textarea.value = "";
 
   } catch (error) {
     console.error("Error in bulk add:", error);
@@ -330,18 +313,13 @@ async function addStudentToDB() {
     const bsModal = bootstrap.Modal.getInstance(modal);
     if (bsModal) bsModal.hide();
 
-    // Show success confirmation modal with reload option
-    showConfirmationModal(
-      "Success",
-      `Student "${studentData.student_name}" has been added successfully. Reload page to see changes?`,
-      () => {
-        window.location.reload();
-      },
-      () => {
-        // Reset inputs if they choose not to reload
-        modal.querySelectorAll('input, select').forEach(el => (el.value = ""));
-      }
-    );
+    await renderStudents(1);
+    showModalAlert(`Student "${studentData.student_name}" has been added successfully.`, "success");
+    modal.querySelectorAll('input, select').forEach(el => (el.value = ""));
+    const activeEl = document.getElementById('activeStudents');
+    if (activeEl && typeof dashboardTotalStudents === 'function') {
+      await dashboardTotalStudents();
+    }
 
   } catch (error) {
     console.error("Error adding student:", error);

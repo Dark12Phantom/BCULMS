@@ -7,19 +7,23 @@ class LibraryOperations {
    * @param {number|string} bookId Book identifier
    */
   async archiveBook(bookId) {
-    const books = await insertDB("select", "books", "*", { book_id: bookId });
+    const user = await requireRole(["Admin", "Librarian"]);
+    const booksRes = await insertDB("select", "books", "*", { book_id: bookId });
+    const books = booksRes?.data || [];
     if (books.length === 0) {
       throw new Error(`Book with ID ${bookId} not found.`);
     }
     const book = books[0];
 
-    const copies = await insertDB("select", "book_copy", "*", { book_id: bookId });
+    const copiesRes = await insertDB("select", "book_copy", "*", { book_id: bookId });
+    const copies = copiesRes?.data || [];
     const borrowedCopies = copies.filter((copy) => copy.status !== "Available");
     if (borrowedCopies.length > 0) {
       throw new Error(`Cannot archive book. ${borrowedCopies.length} copy/copies are currently borrowed.`);
     }
 
-    const existingArchive = await insertDB("select", "archived_books", "*", { book_id: bookId });
+    const existingArchiveRes = await insertDB("select", "archived_books", "*", { book_id: bookId });
+    const existingArchive = existingArchiveRes?.data || [];
     if (existingArchive.length > 0) {
       throw new Error(`Book ${bookId} is already archived.`);
     }
@@ -31,12 +35,21 @@ class LibraryOperations {
       archive_date: new Date().toISOString(),
     };
 
-    await insertDB("insert", "archived_books", archiveData);
-    for (const copy of copies) {
-      await insertDB("delete", "book_copy", null, { copy_id: copy.copy_id });
-    }
-    await insertDB("delete", "books", null, { book_id: bookId });
-
+    await runDBTransaction(async () => {
+      await insertDB("insert", "archived_books", archiveData);
+      for (const copy of copies) {
+        await insertDB("delete", "book_copy", null, { copy_id: copy.copy_id });
+      }
+      await insertDB("delete", "books", null, { book_id: bookId });
+      await insertDB("insert", "transaction_library", {
+        book_id: bookId,
+        operation_type: "Archive",
+        before_values: JSON.stringify({ title: book.title, author: book.author }),
+        after_values: JSON.stringify({ reason: "Archived" }),
+        staff_id: user.id,
+        timestamp: archiveData.archive_date,
+      });
+    });
     return {
       success: true,
       archive_id: archiveData.archive_id,
@@ -50,7 +63,7 @@ class LibraryOperations {
    * @param {object} transactionData Transaction fields
    */
   async insertTransaction(transactionData) {
-    return await insertDB("insert", "transactions", transactionData);
+    return await insertDB("insert", "transaction_library", transactionData);
   }
 
   /**
@@ -59,7 +72,7 @@ class LibraryOperations {
    * @param {number} transactionId Transaction identifier
    */
   async updateTransaction(transactionData, transactionId) {
-    return await insertDB("update", "transactions", transactionData, { transaction_id: transactionId });
+    return await insertDB("update", "transaction_library", transactionData, { id: transactionId });
   }
 
   /**
@@ -68,23 +81,34 @@ class LibraryOperations {
    * @param {number} numberOfCopies Number of copies to create
    */
   async insertBook(bookData, numberOfCopies = 1) {
-    const bookResult = await insertDB("insert", "books", bookData);
-    const newBookId = bookResult.lastInsertRowid || bookResult.insertId;
-    if (!newBookId) {
-      throw new Error("No book_id returned from insertDB");
-    }
-    if (numberOfCopies > 0) {
-      for (let i = 1; i <= numberOfCopies; i++) {
-        const copyData = {
-          copy_id: this.generateCopyId(bookData.department_id, newBookId, i),
-          book_id: newBookId,
-          status: "Available",
-          condition: "New",
-        };
-        await insertDB("insert", "book_copy", copyData);
+    const user = await requireRole(["Admin", "Librarian"]);
+    return await runDBTransaction(async () => {
+      const bookResult = await insertDB("insert", "books", bookData);
+      const newBookId = bookResult.lastInsertRowid || bookResult.insertId;
+      if (!newBookId) {
+        throw new Error("No book_id returned from insertDB");
       }
-    }
-    return bookResult;
+      if (numberOfCopies > 0) {
+        for (let i = 1; i <= numberOfCopies; i++) {
+          const copyData = {
+            copy_id: this.generateCopyId(bookData.department_id, newBookId, i),
+            book_id: newBookId,
+            status: "Available",
+            condition: "New",
+          };
+          await insertDB("insert", "book_copy", copyData);
+        }
+      }
+      await insertDB("insert", "transaction_library", {
+        book_id: newBookId,
+        operation_type: "Add",
+        before_values: null,
+        after_values: JSON.stringify({ title: bookData.title, author: bookData.author, quantity: numberOfCopies }),
+        staff_id: user.id,
+        timestamp: new Date().toISOString(),
+      });
+      return bookResult;
+    });
   }
 
   /**
@@ -93,9 +117,23 @@ class LibraryOperations {
    * @param {number|string} bookId Book identifier
    */
   async updateBook(bookData, bookId) {
+    const user = await requireRole(["Admin", "Librarian"]);
     let bookResult = { changes: 0 };
     if (Object.keys(bookData).length > 0) {
-      bookResult = await insertDB("update", "books", bookData, { book_id: bookId });
+      const beforeRes = await insertDB("select", "books", "*", { book_id: bookId });
+      const before = beforeRes?.data?.[0] || null;
+      bookResult = await runDBTransaction(async () => {
+        const res = await insertDB("update", "books", bookData, { book_id: bookId });
+        await insertDB("insert", "transaction_library", {
+          book_id: bookId,
+          operation_type: "Edit",
+          before_values: before ? JSON.stringify(before) : null,
+          after_values: JSON.stringify(bookData),
+          staff_id: user.id,
+          timestamp: new Date().toISOString(),
+        });
+        return res;
+      });
     }
     return bookResult;
   }
@@ -106,6 +144,7 @@ class LibraryOperations {
    * @param {number} newNumberOfCopies Desired copies count
    */
   async updateBookCopies(bookId, newNumberOfCopies) {
+    const user = await requireRole(["Admin", "Librarian"]);
     const existingCopies = await getBookCopies({ book_id: bookId });
     const currentCount = existingCopies.length;
     if (newNumberOfCopies === currentCount) {
@@ -151,6 +190,16 @@ class LibraryOperations {
       }
       copiesChanged = true;
     }
+    if (copiesChanged) {
+      await insertDB("insert", "transaction_library", {
+        book_id: bookId,
+        operation_type: "Edit",
+        before_values: JSON.stringify({ copies: currentCount }),
+        after_values: JSON.stringify({ copies: newNumberOfCopies }),
+        staff_id: user.id,
+        timestamp: new Date().toISOString(),
+      });
+    }
     return { copiesChanged };
   }
 
@@ -159,6 +208,7 @@ class LibraryOperations {
    * @param {number|string} bookId Book identifier
    */
   async deleteBook(bookId) {
+    const user = await requireRole(["Admin"]);
     const copiesResult = await insertDB("select", "book_copy", "*", { book_id: bookId });
     const copies = copiesResult.data || [];
     console.log("All copies:", copies);
@@ -173,10 +223,21 @@ class LibraryOperations {
     if (borrowedCopies.length > 0) {
       throw new Error(`Cannot delete book. ${borrowedCopies.length} copy/copies are currently borrowed.`);
     }
-    for (const copy of copies) {
-      await insertDB("delete", "book_copy", null, { copy_id: copy.copy_id });
-    }
-    return await insertDB("delete", "books", null, { book_id: bookId });
+    return await runDBTransaction(async () => {
+      for (const copy of copies) {
+        await insertDB("delete", "book_copy", null, { copy_id: copy.copy_id });
+      }
+      const res = await insertDB("delete", "books", null, { book_id: bookId });
+      await insertDB("insert", "transaction_library", {
+        book_id: bookId,
+        operation_type: "Delete",
+        before_values: null,
+        after_values: JSON.stringify({ reason: "User initiated" }),
+        staff_id: user.id,
+        timestamp: new Date().toISOString(),
+      });
+      return res;
+    });
   }
 
   /**

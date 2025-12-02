@@ -42,6 +42,8 @@ async function selectDepartments() {
 
     departmentFilter.innerHTML = "";
 
+    const isStudentsPage = (window.location.pathname || "").endsWith("students.html");
+
     // Add "All Departments" option
     const allLi = document.createElement("li");
     const allA = document.createElement("a");
@@ -52,8 +54,12 @@ async function selectDepartments() {
     allA.addEventListener("click", async (e) => {
       e.preventDefault();
       currentDepartmentFilter = null;
-      await renderBooks(1); // Reset to page 1 with no filter
-      updateFilterButtonText("Filter"); // Reset button text
+      if (isStudentsPage && typeof renderStudents === 'function') {
+        await renderStudents(1); // Reset to page 1 with no filter
+      } else if (typeof renderBooks === 'function') {
+        await renderBooks(1);
+      }
+      updateFilterButtonText("Filter");
     });
     allLi.appendChild(allA);
     departmentFilter.appendChild(allLi);
@@ -76,8 +82,12 @@ async function selectDepartments() {
       a.addEventListener("click", async (e) => {
         e.preventDefault();
         currentDepartmentFilter = dept.department_id;
-        await renderBooks(1); // Reset to page 1 with filter
-        updateFilterButtonText(dept.name); // Update button text
+        if (isStudentsPage && typeof renderStudents === 'function') {
+          await renderStudents(1); // Reset to page 1 with filter
+        } else if (typeof renderBooks === 'function') {
+          await renderBooks(1);
+        }
+        updateFilterButtonText(dept.name);
       });
       
       li.appendChild(a);
@@ -130,10 +140,10 @@ async function getAllBooks() {
     const result = await getBooks(whereClause);
     const books = result.data || [];
 
+    const copyMap = await getBookCopyNumber();
     for (let book of books) {
-      const copiesResult = await getBookCopyNumber({ book_id: book.book_id });
-      const copies = copiesResult.data || [];
-      book.totalCopies = copies[0]?.totalCopies || 0;
+      const id = parseInt(book.book_id, 10);
+      book.totalCopies = copyMap[id] || 0;
     }
     return books;
   } catch (error) {

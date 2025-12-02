@@ -49,6 +49,15 @@ class DatabaseConnection {
       console.log("Database Loaded:\n" + JSON.stringify(stats, null, 2));
       console.log("Database file size: " + fileData.byteLength + " bytes");
       console.log("Full DB path:", fullDbPath);
+      // Ensure new schema objects exist for upgraded installations
+      if (typeof applyAdditionalSchema === 'function') {
+        try {
+          await applyAdditionalSchema();
+          await this.saveDB('applyAdditionalSchema');
+        } catch (schemaErr) {
+          console.error('Failed to apply additional schema:', schemaErr);
+        }
+      }
     } catch (e) {
       console.log("No Database File Found: " + e.message);
       console.log("Creating new database...");

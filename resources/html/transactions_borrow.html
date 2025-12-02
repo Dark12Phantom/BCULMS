@@ -110,18 +110,27 @@
       <form class="d-flex mb-2">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-success" type="submit"><span class="bi bi-search"></span></button>
+        <select class="form-select w-auto ms-2" id="borrowTypeFilter" aria-label="Filter by transaction type">
+          <option value="">All</option>
+          <option value="Borrow">Borrow</option>
+          <option value="Return">Return</option>
+        </select>
       </form>
-      <table class="table table-striped table-hover">
+      <table class="table table-striped table-hover" id="borrowTransactionsTable">
         <thead>
           <tr class="table-info">
-            <th>Transaction Type</th> <!--The transaction type here is Borrowed or Returned-->
-            <th>Copy ID</th>
-            <th>Book Title</th>
-            <th>Condition</th>
-            <th>Made By</th>
-            <th>Date</th>
+            <th>Transaction Type</th>
+            <th>Title</th>
+            <th>ISBN</th>
+            <th>Borrower</th>
+            <th>Borrower ID</th>
+            <th>Borrowed At</th>
+            <th>Due At</th>
+            <th>Returned At</th>
+            <th>Staff</th>
           </tr>
         </thead>
+        <tbody id="borrowTransactionsTableBody"></tbody>
       </table>
     </main>
 

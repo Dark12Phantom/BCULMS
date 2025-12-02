@@ -45,21 +45,38 @@ CREATE TABLE IF NOT EXISTS "students" (
 	"contact_number"	NUMERIC NOT NULL,
 	PRIMARY KEY("student_id"),
 	FOREIGN KEY("course_id") REFERENCES "course"("course_id"));
-CREATE TABLE IF NOT EXISTS "transactions_borrow" (
-	"transaction_id"	INTEGER NOT NULL,
-	"student_id"	TEXT NOT NULL,
-	"copy_id"	TEXT NOT NULL,
-	"date_borrowed"	TEXT,
-	"date_returned"	TEXT,
-	"due_date"	TEXT,
-	PRIMARY KEY("transaction_id" AUTOINCREMENT)
+COMMIT;
+
+-- New normalized transaction tables per updated requirements
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "transaction_borrow" (
+  "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+  "book_id" INTEGER NOT NULL,
+  "borrower_id" TEXT NOT NULL,
+  "transaction_type" TEXT NOT NULL, -- Borrow | Return
+  "borrowed_at" TEXT,               -- UTC ISO timestamp
+  "due_at" TEXT,                    -- UTC ISO timestamp
+  "returned_at" TEXT,               -- UTC ISO timestamp
+  "staff_id" TEXT NOT NULL,
+  FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE,
+  FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS "transactions_library" (
-	"transaction_id"	INTEGER NOT NULL,
-	"transaction_name"	TEXT NOT NULL,
-	"transaction_type"	TEXT NOT NULL,
-	"made_by"	TEXT NOT NULL,
-	"date"	TEXT NOT NULL,
-	PRIMARY KEY("transaction_id" AUTOINCREMENT)
+CREATE INDEX IF NOT EXISTS idx_transaction_borrow_book ON "transaction_borrow"("book_id");
+CREATE INDEX IF NOT EXISTS idx_transaction_borrow_borrower ON "transaction_borrow"("borrower_id");
+CREATE INDEX IF NOT EXISTS idx_transaction_borrow_type ON "transaction_borrow"("transaction_type");
+CREATE INDEX IF NOT EXISTS idx_transaction_borrow_dates ON "transaction_borrow"("borrowed_at", "returned_at", "due_at");
+
+CREATE TABLE IF NOT EXISTS "transaction_library" (
+  "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+  "book_id" INTEGER NOT NULL,
+  "operation_type" TEXT NOT NULL, -- Add | Edit | Archive | Delete
+  "before_values" TEXT,           -- JSON string of previous values
+  "after_values" TEXT,            -- JSON string of new values
+  "staff_id" TEXT NOT NULL,
+  "timestamp" TEXT NOT NULL,      -- UTC ISO timestamp
+  FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE
 );
+CREATE INDEX IF NOT EXISTS idx_transaction_library_book ON "transaction_library"("book_id");
+CREATE INDEX IF NOT EXISTS idx_transaction_library_type ON "transaction_library"("operation_type");
+CREATE INDEX IF NOT EXISTS idx_transaction_library_time ON "transaction_library"("timestamp");
 COMMIT;

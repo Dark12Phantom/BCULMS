@@ -112,15 +112,16 @@
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-success" type="submit"><span class="bi bi-search"></span></button>
       </form>
-      <table class="table table-striped table-hover">
+      <table class="table table-striped table-hover" id="libraryTransactionsTable">
         <thead>
           <tr class="table-info">
-            <th>Transaction Type</th> <!--The transaction type here is Addition or Removal-->
-            <th>Transaction Name</th>
-            <th>Made By</th>
-            <th>Date</th>
+            <th>Operation Type</th>
+            <th>Details</th>
+            <th>Staff</th>
+            <th>Timestamp (UTC)</th>
           </tr>
         </thead>
+        <tbody id="libraryTransactionsTableBody"></tbody>
       </table>
     </main>
 
@@ -131,6 +132,7 @@
     <script src="../js/database-connection.js"></script>
     <script src="../js/create-table.js"></script>
     <script src="../js/database-operations.js"></script>
+    <script src="../js/auth.js"></script>
     <script src="../js/frontend-operations.js"></script>
     <script src="../js/library-operations.js"></script>
     <script src="../js/filter.js"></script>

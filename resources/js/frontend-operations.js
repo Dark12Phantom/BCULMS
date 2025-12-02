@@ -19,7 +19,7 @@ async function getCourses(whereClause = null) {
 }
 
 async function getTransactions(whereClause = null) {
-  return await insertDB("select", "transactions", "*", whereClause);
+  return await insertDB("select", "transaction_library", "*", whereClause);
 }
 
 async function getBookCopies(whereClause = null) {

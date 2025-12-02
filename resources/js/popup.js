@@ -151,14 +151,219 @@ async function bookCopyModalLoader() {
 
   // Menu actions
   modalElement.querySelector("#setBorrowedBook").onclick = () => {
-    const id = selectedRow.dataset.copyId;
-    showPopup("Book Copy Details", `Book Copy ID: ${id}`);
+    const copyId = selectedRow.dataset.copyId;
+    (async () => {
+      const copyResult = await insertDB("select", "book_copy", "*", { copy_id: copyId });
+      const copy = copyResult.data?.[0];
+      if (!copy) {
+        showModalAlert("Book copy not found.", "danger");
+        return;
+      }
+      if ((copy.status || "").toLowerCase() !== "available") {
+        showModalAlert("Copy is not available.", "warning");
+        return;
+      }
+      const existingBorrow = await insertDB(
+        "select",
+        "transactions_borrow",
+        "transaction_id",
+        { copy_id: copyId, date_returned: null }
+      );
+      if (existingBorrow.data && existingBorrow.data.length > 0) {
+        showModalAlert("Copy already has an active borrow.", "warning");
+        return;
+      }
+      const studentsResult = await getStudents();
+      const students = studentsResult.data || [];
+      const modal = document.createElement("div");
+      modal.className = "modal fade";
+      modal.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title">Assign Borrower</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Student</label>
+                <select class="form-control" id="borrowStudentSelect">
+                  ${students
+                    .map(
+                      (s) => `<option value="${s.student_id}">${s.student_name} (${s.student_id})</option>`
+                    )
+                    .join("")}
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Due Date</label>
+                <input type="date" class="form-control" id="borrowDueDate">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" id="confirmBorrowBtn">Confirm</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      const bsModal = new bootstrap.Modal(modal);
+      bsModal.show();
+      const dueInput = modal.querySelector("#borrowDueDate");
+      const today = new Date();
+      const defaultDue = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
+      const fmt = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      dueInput.value = fmt(defaultDue);
+      modal.querySelector("#confirmBorrowBtn").addEventListener("click", async () => {
+        const studentId = modal.querySelector("#borrowStudentSelect").value;
+        const dueDate = modal.querySelector("#borrowDueDate").value;
+        const borrowedDate = fmt(today);
+        const borrowedAtUTC = new Date().toISOString();
+        const dueAtUTC = new Date(dueDate + 'T00:00:00Z').toISOString();
+        if (new Date(dueAtUTC) < new Date(borrowedAtUTC)) {
+          showModalAlert("Due date cannot be before today.", "warning");
+          return;
+        }
+        try {
+          const copyRow = await insertDB("select", "book_copy", "*", { copy_id: copyId });
+          const copyData = copyRow?.data?.[0];
+          const bookId = copyData?.book_id;
+          const user = await requireRole(["Admin", "Librarian"]);
+          await runDBTransaction(async () => {
+            await insertDB("insert", "transactions_borrow", {
+              student_id: studentId,
+              copy_id: copyId,
+              date_borrowed: borrowedDate,
+              date_returned: null,
+              due_date: dueDate,
+            });
+            await insertDB("insert", "transaction_borrow", {
+              book_id: bookId,
+              borrower_id: studentId,
+              transaction_type: "Borrow",
+              borrowed_at: borrowedAtUTC,
+              due_at: dueAtUTC,
+              returned_at: null,
+              staff_id: user.id,
+            });
+            await insertDB("update", "book_copy", {
+              status: "Borrowed",
+              borrowed_date: borrowedDate,
+              returned_date: null,
+              due_date: dueDate,
+            }, { copy_id: copyId });
+          });
+          bsModal.hide();
+          modal.remove();
+          const cells = selectedRow.querySelectorAll("td");
+          const studentsMap = {};
+          students.forEach((s) => { studentsMap[s.student_id] = s.student_name; });
+          if (cells[3]) cells[3].textContent = "Borrowed";
+          if (cells[4]) cells[4].textContent = studentsMap[studentId] || studentId;
+          showModalAlert("Borrow recorded successfully.", "success");
+        } catch (error) {
+          showModalAlert("Failed to record borrow: " + error.message, "danger");
+        }
+      });
+      modal.addEventListener("hidden.bs.modal", () => modal.remove());
+    })();
     modalInstance.hide();
   };
 
   modalElement.querySelector("#setReturnedBook").onclick = () => {
-    const id = selectedRow.dataset.copyId;
-    showPopup("Edit Book Copy", `Editing Book Copy ID: ${id}`);
+    const copyId = selectedRow.dataset.copyId;
+    (async () => {
+      const copyResult = await insertDB("select", "book_copy", "*", { copy_id: copyId });
+      const copy = copyResult.data?.[0];
+      if (!copy) {
+        showModalAlert("Book copy not found.", "danger");
+        return;
+      }
+      if ((copy.status || "").toLowerCase() !== "borrowed") {
+        showModalAlert("Copy is not currently borrowed.", "warning");
+        return;
+      }
+      const modal = document.createElement("div");
+      modal.className = "modal fade";
+      modal.innerHTML = `
+        <div class=\"modal-dialog modal-dialog-centered\">
+          <div class=\"modal-content\">
+            <div class=\"modal-header bg-info text-white\">
+              <h5 class=\"modal-title\">Set as Returned</h5>
+              <button type=\"button\" class=\"btn-close btn-close-white\" data-bs-dismiss=\"modal\"></button>
+            </div>
+            <div class=\"modal-body\">
+              <div class=\"mb-3\">
+                <label class=\"form-label\">Condition</label>
+                <select class=\"form-control\" id=\"returnConditionSelect\">
+                  <option value=\"New\">New</option>
+                  <option value=\"Good\" selected>Good</option>
+                  <option value=\"Fair\">Fair</option>
+                  <option value=\"Damaged\">Damaged</option>
+                </select>
+              </div>
+              <div class=\"mb-3\">
+                <label class=\"form-label\">Return Date</label>
+                <input type=\"date\" class=\"form-control\" id=\"returnDateInput\">
+              </div>
+            </div>
+            <div class=\"modal-footer\">
+              <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Cancel</button>
+              <button type=\"button\" class=\"btn btn-primary\" id=\"confirmReturnBtn\">Confirm Return</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      const bsModal = new bootstrap.Modal(modal);
+      bsModal.show();
+      const today = new Date();
+      const fmt = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      modal.querySelector("#returnDateInput").value = fmt(today);
+      modal.querySelector("#confirmReturnBtn").addEventListener("click", async () => {
+        const condition = modal.querySelector("#returnConditionSelect").value;
+        const returnDate = modal.querySelector("#returnDateInput").value || fmt(today);
+        const returnedAtUTC = new Date(returnDate + 'T00:00:00Z').toISOString();
+        try {
+          const activeBorrow = await insertDB("select", "transactions_borrow", "transaction_id", { copy_id: copyId, date_returned: null });
+          if (!activeBorrow.data || activeBorrow.data.length === 0) {
+            showModalAlert("No active borrow transaction found.", "warning");
+            return;
+          }
+          const txId = activeBorrow.data[0].transaction_id;
+          const copyRow = await insertDB("select", "book_copy", "*", { copy_id: copyId });
+          const copyData = copyRow?.data?.[0];
+          const bookId = copyData?.book_id;
+          const borrowRow = await insertDB("select", "transactions_borrow", "student_id", { transaction_id: txId });
+          const borrowerId = borrowRow?.data?.[0]?.student_id;
+          const user = await requireRole(["Admin", "Librarian"]);
+          await runDBTransaction(async () => {
+            await insertDB("update", "transactions_borrow", { date_returned: returnDate }, { transaction_id: txId });
+            await insertDB("insert", "transaction_borrow", {
+              book_id: bookId,
+              borrower_id: borrowerId,
+              transaction_type: "Return",
+              borrowed_at: null,
+              due_at: null,
+              returned_at: returnedAtUTC,
+              staff_id: user.id,
+            });
+            await insertDB("update", "book_copy", { status: "Available", condition: condition, returned_date: returnDate, borrowed_date: null, due_date: null }, { copy_id: copyId });
+          });
+          bsModal.hide();
+          modal.remove();
+          const cells = selectedRow.querySelectorAll("td");
+          if (cells[3]) cells[3].textContent = "Available";
+          if (cells[4]) cells[4].textContent = "—";
+          if (cells[5]) cells[5].textContent = condition;
+          showModalAlert("Copy set as returned.", "success");
+        } catch (error) {
+          showModalAlert("Failed to set returned: " + error.message, "danger");
+        }
+      });
+      modal.addEventListener("hidden.bs.modal", () => modal.remove());
+    })();
     modalInstance.hide();
   };
 
@@ -211,8 +416,9 @@ async function bookCopyModalLoader() {
               `Copy "${titleText}" has been successfully deleted.`,
               "success"
             );
-
-            window.location.reload();
+            if (typeof renderBookCopies === 'function') {
+              await renderBookCopies(1);
+            }
           } catch (error) {
             console.error("Error deleting book copy:", error);
             showModalAlert(
@@ -340,7 +546,7 @@ async function showBookPopup(action, id) {
               "Success",
               `
               <p>Book updated successfully!</p>
-              <button class="btn btn-primary mt-2" onclick="closeModal(); window.location.reload();">OK</button>
+              <button class="btn btn-primary mt-2" onclick="closeModal();">OK</button>
               `
             );
 
@@ -430,6 +636,31 @@ function closeModal() {
   }
 }
 
+function showPopup(title, message) {
+  const modal = document.createElement("div");
+  modal.className = "modal fade";
+  modal.innerHTML = `
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">${title}</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>${message}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  const modalInstance = new bootstrap.Modal(modal);
+  modalInstance.show();
+  modal.addEventListener("hidden.bs.modal", () => modal.remove());
+}
+
 function showDeleteConfirmationModal(title, message, onConfirm) {
   const confirmModal = document.createElement("div");
   confirmModal.className = "modal fade";
@@ -468,4 +699,134 @@ function showDeleteConfirmationModal(title, message, onConfirm) {
 
   bsModal.show();
   confirmModal.addEventListener("hidden.bs.modal", () => confirmModal.remove());
+}
+async function studentContextModalLoader() {
+  const tbody = document.getElementById("studentsTableBody");
+  const modalHTML = `
+    <div class="modal fade" id="studentContextModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-info text-white">
+            <h5 class="modal-title">Student Options for <span style="color: #00ff15" id="studentContextTitle"></span></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-0">
+            <ul class="list-group list-group-flush mb-0">
+              <li class="list-group-item list-group-item-action" id="viewStudentDetails">View Details</li>
+              <li class="list-group-item list-group-item-action" id="viewStudentBorrowed">View Borrowed Books</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML("beforeend", modalHTML);
+  const modalElement = document.getElementById("studentContextModal");
+  const modalInstance = new bootstrap.Modal(modalElement);
+  let selectedRow = null;
+
+  tbody.addEventListener("contextmenu", (e) => {
+    const row = e.target.closest("tr[data-student-id]");
+    if (!row) return;
+    e.preventDefault();
+    selectedRow = row;
+    const nameCell = selectedRow.querySelector("td:nth-child(2)");
+    document.getElementById("studentContextTitle").textContent = nameCell ? nameCell.textContent.trim() : "";
+    modalInstance.show();
+  });
+
+  modalElement.querySelector("#viewStudentDetails").onclick = async () => {
+    const id = selectedRow.dataset.studentId;
+    await showStudentDetails(id);
+    modalInstance.hide();
+  };
+  modalElement.querySelector("#viewStudentBorrowed").onclick = async () => {
+    const id = selectedRow.dataset.studentId;
+    await showStudentBorrowedBooks(id);
+    modalInstance.hide();
+  };
+}
+
+async function showStudentDetails(studentId) {
+  try {
+    const stuRes = await insertDB("select", "students", "*", { student_id: studentId });
+    const student = stuRes?.data?.[0];
+    if (!student) {
+      showModalAlert("Student not found.", "danger");
+      return;
+    }
+    let courseName = "";
+    let departmentName = "";
+    if (student.course_id) {
+      const courseRes = await insertDB("select", "course", "*", { course_id: student.course_id });
+      const course = courseRes?.data?.[0];
+      courseName = course?.name || "";
+      if (course?.department_id) {
+        const deptRes = await insertDB("select", "department", "*", { department_id: course.department_id });
+        const dept = deptRes?.data?.[0];
+        departmentName = dept?.name || "";
+      }
+    }
+    const body = `
+      <div class="mb-2"><strong>ID:</strong> ${student.student_id || ""}</div>
+      <div class="mb-2"><strong>Name:</strong> ${student.student_name || ""}</div>
+      <div class="mb-2"><strong>Year:</strong> ${student.student_year || ""}</div>
+      <div class="mb-2"><strong>Course:</strong> ${courseName || student.course_id || ""}</div>
+      <div class="mb-2"><strong>Department:</strong> ${departmentName || ""}</div>
+      <div class="mb-2"><strong>Status:</strong> ${student.status || ""}</div>
+      <div class="mb-2"><strong>Contact:</strong> ${student.contact_number || ""}</div>
+    `;
+    openModal("Student Details", body);
+  } catch (error) {
+    showModalAlert("Failed to load student details: " + error.message, "danger");
+  }
+}
+
+async function showStudentBorrowedBooks(studentId) {
+  try {
+    const txRes = await insertDB("select", "transactions_borrow", "copy_id, date_borrowed, due_date, date_returned", { student_id: studentId });
+    const txs = txRes?.data || [];
+    const copiesRes = await insertDB("select", "book_copy", "copy_id, book_id, status", null);
+    const booksRes = await insertDB("select", "books", "book_id, title", null);
+    const copyToBook = {};
+    (copiesRes?.data || []).forEach(c => { copyToBook[c.copy_id] = { book_id: c.book_id, status: c.status }; });
+    const bookTitles = {};
+    (booksRes?.data || []).forEach(b => { bookTitles[b.book_id] = b.title; });
+    const rowsHtml = txs.map(t => {
+      const info = copyToBook[t.copy_id] || {};
+      const title = bookTitles[info.book_id] || "Unknown";
+      const status = t.date_returned ? `Returned (${t.date_returned})` : "Borrowed";
+      return `
+        <tr>
+          <td>${t.copy_id}</td>
+          <td>${info.book_id || ""}</td>
+          <td>${title}</td>
+          <td>${t.date_borrowed || ""}</td>
+          <td>${t.due_date || ""}</td>
+          <td>${status}</td>
+        </tr>`;
+    }).join("");
+    const body = `
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Copy ID</th>
+              <th>Book ID</th>
+              <th>Title</th>
+              <th>Date Borrowed</th>
+              <th>Due Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml || '<tr><td colspan="6">No borrow records</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    `;
+    openModal("Borrowed Books", body);
+  } catch (error) {
+    showModalAlert("Failed to load borrowed books: " + error.message, "danger");
+  }
 }

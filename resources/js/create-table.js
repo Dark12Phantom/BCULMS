@@ -60,32 +60,79 @@ class DatabaseSchema {
 	PRIMARY KEY("student_id"),
 	FOREIGN KEY("course_id") REFERENCES "course"("course_id"));`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS "transactions_borrow" (
-	"transaction_id"	INTEGER NOT NULL,
-	"student_id"	TEXT NOT NULL,
-	"copy_id"	TEXT NOT NULL,
-	"date_borrowed"	TEXT NOT NULL,
-	"date_returned"	TEXT,
-	"due_date"	TEXT NOT NULL,
-	PRIMARY KEY("transaction_id" AUTOINCREMENT),
-	FOREIGN KEY("copy_id") REFERENCES "book_copy"("copy_id"),
-	FOREIGN KEY("student_id") REFERENCES "students"("student_id"));`);
+    // New normalized transaction tables per updated requirements
+    db.run(`CREATE TABLE IF NOT EXISTS "transaction_borrow" (
+      "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+      "book_id" INTEGER NOT NULL,
+      "borrower_id" TEXT NOT NULL,
+      "transaction_type" TEXT NOT NULL,
+      "borrowed_at" TEXT,
+      "due_at" TEXT,
+      "returned_at" TEXT,
+      "staff_id" TEXT NOT NULL,
+      FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE,
+      FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE CASCADE
+    );`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_book ON "transaction_borrow"("book_id");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_borrower ON "transaction_borrow"("borrower_id");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_type ON "transaction_borrow"("transaction_type");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_dates ON "transaction_borrow"("borrowed_at", "returned_at", "due_at");`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS "transactions_library" (
-	"transaction_id"	INTEGER NOT NULL,
-	"transaction_name"	TEXT NOT NULL,
-	"transaction_type"	TEXT NOT NULL,
-	"made_by"	TEXT NOT NULL,
-	"date"	TEXT NOT NULL,
-	PRIMARY KEY("transaction_id" AUTOINCREMENT));`);
+    db.run(`CREATE TABLE IF NOT EXISTS "transaction_library" (
+      "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+      "book_id" INTEGER NOT NULL,
+      "operation_type" TEXT NOT NULL,
+      "before_values" TEXT,
+      "after_values" TEXT,
+      "staff_id" TEXT NOT NULL,
+      "timestamp" TEXT NOT NULL,
+      FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE
+    );`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_book ON "transaction_library"("book_id");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_type ON "transaction_library"("operation_type");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_time ON "transaction_library"("timestamp");`);
   }
 }
 
 const databaseSchema = new DatabaseSchema();
 
 async function createDB() { return databaseSchema.createDB(); }
+async function applyAdditionalSchema() {
+  // Ensure new normalized transaction tables exist for existing databases
+  db.run(`CREATE TABLE IF NOT EXISTS "transaction_borrow" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "book_id" INTEGER NOT NULL,
+    "borrower_id" TEXT NOT NULL,
+    "transaction_type" TEXT NOT NULL,
+    "borrowed_at" TEXT,
+    "due_at" TEXT,
+    "returned_at" TEXT,
+    "staff_id" TEXT NOT NULL,
+    FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE,
+    FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE CASCADE
+  );`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_book ON "transaction_borrow"("book_id");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_borrower ON "transaction_borrow"("borrower_id");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_type ON "transaction_borrow"("transaction_type");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_dates ON "transaction_borrow"("borrowed_at", "returned_at", "due_at");`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS "transaction_library" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "book_id" INTEGER NOT NULL,
+    "operation_type" TEXT NOT NULL,
+    "before_values" TEXT,
+    "after_values" TEXT,
+    "staff_id" TEXT NOT NULL,
+    "timestamp" TEXT NOT NULL,
+    FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE
+  );`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_book ON "transaction_library"("book_id");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_type ON "transaction_library"("operation_type");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_time ON "transaction_library"("timestamp");`);
+}
 if (typeof window !== "undefined") {
   window.BCULMS = window.BCULMS || {};
   window.BCULMS.DatabaseSchema = DatabaseSchema;
   window.BCULMS.databaseSchema = databaseSchema;
+  window.applyAdditionalSchema = applyAdditionalSchema;
 }

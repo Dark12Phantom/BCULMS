@@ -106,7 +106,7 @@ async function renderStudents(page = 1, rowsPerPage = 25) {
     // Get all students
     const studentsResult = await getStudents();
     console.log("Students result:", studentsResult);
-    const students = studentsResult?.data || [];
+    let students = studentsResult?.data || [];
 
     // Get all courses and create a map
     const coursesResult = await getCourses();
@@ -127,6 +127,15 @@ async function renderStudents(page = 1, rowsPerPage = 25) {
       departmentMap[dept.department_id] = dept.name;
     });
 
+    // Apply department filter if set
+    const selectedDept = (typeof getCurrentDepartmentFilter === 'function') ? getCurrentDepartmentFilter() : null;
+    if (selectedDept) {
+      students = students.filter(stu => {
+        const courseInfo = courseMap[stu.course_id];
+        return courseInfo && courseInfo.department_id === selectedDept;
+      });
+    }
+
     // Pagination
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
@@ -135,6 +144,7 @@ async function renderStudents(page = 1, rowsPerPage = 25) {
     if (pageRows.length > 0) {
       pageRows.forEach(student => {
         const tr = document.createElement("tr");
+        tr.dataset.studentId = student.student_id;
         const courseInfo = courseMap[student.course_id] || { name: 'Unknown', department_id: '?' };
         const departmentName = departmentMap[courseInfo.department_id] || 'Unknown';
 
@@ -145,12 +155,11 @@ async function renderStudents(page = 1, rowsPerPage = 25) {
           <td>${courseInfo.name}</td>
           <td>${departmentName}</td>
           <td><span class="badge bg-success">${student.status}</span></td>
-          <td>${student.date_borrowed || 'N/A'}</td>
         `;
         studentTBody.appendChild(tr);
       });
     } else {
-      studentTBody.innerHTML = '<tr><td colspan="7">No students on record</td></tr>';
+      studentTBody.innerHTML = '<tr><td colspan="6">No students on record</td></tr>';
     }
 
     // Render pagination
@@ -159,7 +168,7 @@ async function renderStudents(page = 1, rowsPerPage = 25) {
 
   } catch (error) {
     console.error("Failed to render students:", error);
-    studentTBody.innerHTML = '<tr><td colspan="7">Error loading students</td></tr>';
+    studentTBody.innerHTML = '<tr><td colspan="6">Error loading students</td></tr>';
   }
 }
 
@@ -202,7 +211,7 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
       "select",
       "transactions_borrow",
       "copy_id, student_id",
-      "WHERE returned_date IS NULL"
+      { date_returned: null }
     );
 
     const borrows = borrowsResult?.data || [];
@@ -271,5 +280,97 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
   }
 }
 
-async function renderBorrowTransactions() {}
-async function renderLibraryTransactions() {}
+async function renderBorrowTransactions() {
+  const tbody = document.querySelector('#borrowTransactionsTableBody');
+  if (!tbody) return console.error('Table body #borrowTransactionsTableBody not found');
+  tbody.innerHTML = '';
+  try {
+    const filterEl = document.getElementById('borrowTypeFilter');
+    const selectedType = filterEl ? filterEl.value : '';
+    const txRes = await insertDB('select', 'transaction_borrow', '*', null);
+    let txs = txRes?.data || [];
+    if (selectedType) {
+      txs = txs.filter(t => (t.transaction_type || '') === selectedType);
+    }
+    const booksRes = await insertDB('select', 'books', 'book_id, title', null);
+    const studentsRes = await insertDB('select', 'students', 'student_id, student_name', null);
+    const bookTitles = {}; (booksRes?.data || []).forEach(b => { bookTitles[b.book_id] = b.title; });
+    const studentNames = {}; (studentsRes?.data || []).forEach(s => { studentNames[s.student_id] = s.student_name; });
+    txs.forEach(t => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${t.transaction_type}</td>
+        <td>${bookTitles[t.book_id] || ''}</td>
+        <td>${(t.isbn || '')}</td>
+        <td>${studentNames[t.borrower_id] || ''}</td>
+        <td>${t.borrower_id}</td>
+        <td>${t.borrowed_at || ''}</td>
+        <td>${t.due_at || ''}</td>
+        <td>${t.returned_at || ''}</td>
+        <td>${t.staff_id || ''}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    if (txs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9">No borrow/return transactions</td></tr>';
+    }
+    if (filterEl && !filterEl.dataset.bound) {
+      filterEl.addEventListener('change', () => renderBorrowTransactions());
+      filterEl.dataset.bound = '1';
+    }
+  } catch (error) {
+    console.error('Failed to render borrow transactions:', error);
+    tbody.innerHTML = '<tr><td colspan="9">Error loading borrow transactions</td></tr>';
+  }
+}
+
+async function renderLibraryTransactions() {
+  const tbody = document.querySelector('#libraryTransactionsTableBody');
+  if (!tbody) return console.error('Table body #libraryTransactionsTableBody not found');
+  tbody.innerHTML = '';
+  try {
+    const txRes = await insertDB('select', 'transaction_library', '*', null);
+    const txs = txRes?.data || [];
+    const booksRes = await insertDB('select', 'books', 'book_id, title, author', null);
+    const bookInfo = {}; (booksRes?.data || []).forEach(b => { bookInfo[b.book_id] = { title: b.title, author: b.author }; });
+    txs.forEach(t => {
+      let details = '';
+      const info = bookInfo[t.book_id] || { title: '', author: '' };
+      try {
+        const before = t.before_values ? JSON.parse(t.before_values) : null;
+        const after = t.after_values ? JSON.parse(t.after_values) : null;
+        if (t.operation_type === 'Add') {
+          details = `Added: ${after?.title || info.title} by ${after?.author || info.author}`;
+          if (after?.quantity) details += ` • Quantity: ${after.quantity}`;
+          if (after?.isbn) details += ` • ISBN: ${after.isbn}`;
+        } else if (t.operation_type === 'Edit') {
+          details = `Edited: ${info.title} by ${info.author}`;
+          const beforeStr = before ? JSON.stringify(before) : '';
+          const afterStr = after ? JSON.stringify(after) : '';
+          details += ` • Before: ${beforeStr} • After: ${afterStr}`;
+        } else if (t.operation_type === 'Archive' || t.operation_type === 'Delete') {
+          details = `${t.operation_type}: ${info.title} by ${info.author}`;
+          if (after?.reason) details += ` • Reason: ${after.reason}`;
+        } else {
+          details = `${t.operation_type}: ${info.title}`;
+        }
+      } catch (_) {
+        details = `${t.operation_type}: ${info.title}`;
+      }
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${t.operation_type}</td>
+        <td>${details}</td>
+        <td>${t.staff_id || ''}</td>
+        <td>${t.timestamp || ''}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    if (txs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4">No library operations</td></tr>';
+    }
+  } catch (error) {
+    console.error('Failed to render library transactions:', error);
+    tbody.innerHTML = '<tr><td colspan="4">Error loading library operations</td></tr>';
+  }
+}

@@ -3,7 +3,9 @@
  * Provides wrappers to maintain backward-compatible global function APIs.
  */
 class DatabaseOperations {
-  constructor() {}
+  constructor() {
+    this.inTransaction = false;
+  }
   /**
    * Dispatch a CRUD operation against a table.
    * @param {string} operation One of: insert | update | delete | select
@@ -52,13 +54,37 @@ class DatabaseOperations {
           throw new Error(`Unsupported operation: ${operation}`);
       }
 
-      if (hasChanges) {
+      if (hasChanges && !this.inTransaction) {
         await this.updateDB(`${operation} ${table}`, result);
       }
 
       return result;
     } catch (error) {
       console.error(`insertDB error: ${operation} on ${table}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Run a set of DB operations atomically.
+   * @param {function} fn Callback receiving this DatabaseOperations for operations
+   */
+  async runTransaction(fn) {
+    if (typeof fn !== "function") {
+      throw new Error("runTransaction requires a function callback");
+    }
+    try {
+      this.inTransaction = true;
+      db.exec("BEGIN IMMEDIATE TRANSACTION;");
+      const result = await fn(this);
+      db.exec("COMMIT;");
+      this.inTransaction = false;
+      await this.updateDB("transaction commit", { changes: 1 });
+      return result;
+    } catch (error) {
+      try { db.exec("ROLLBACK;"); } catch (_) {}
+      this.inTransaction = false;
+      console.error("Transaction failed; rolled back:", error);
       throw error;
     }
   }
@@ -232,13 +258,20 @@ class DatabaseOperations {
 
     if (whereClause && typeof whereClause === "object") {
       const whereColumns = Object.keys(whereClause);
-      const whereValues = Object.values(whereClause);
-      const whereCondition = whereColumns
-        .map((col) => `${col} = ?`)
-        .join(" AND ");
-
-      query += ` WHERE ${whereCondition}`;
-      values = whereValues;
+      const whereParts = [];
+      values = [];
+      whereColumns.forEach((col) => {
+        const val = whereClause[col];
+        if (val === null) {
+          whereParts.push(`${col} IS NULL`);
+        } else {
+          whereParts.push(`${col} = ?`);
+          values.push(val);
+        }
+      });
+      if (whereParts.length > 0) {
+        query += ` WHERE ${whereParts.join(" AND ")}`;
+      }
     }
 
     try {
@@ -279,8 +312,10 @@ async function handleInsert(table, data) { return dbOperations.handleInsert(tabl
 async function handleUpdate(table, data, whereClause) { return dbOperations.handleUpdate(table, data, whereClause); }
 async function handleDelete(table, whereClause) { return dbOperations.handleDelete(table, whereClause); }
 async function handleSelect(table, columns = "*", whereClause = null) { return dbOperations.handleSelect(table, columns, whereClause); }
+async function runDBTransaction(fn) { return dbOperations.runTransaction(fn); }
 if (typeof window !== "undefined") {
   window.BCULMS = window.BCULMS || {};
   window.BCULMS.DatabaseOperations = DatabaseOperations;
   window.BCULMS.dbOperations = dbOperations;
+  window.runDBTransaction = runDBTransaction;
 }
