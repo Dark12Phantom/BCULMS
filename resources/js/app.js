@@ -14,6 +14,8 @@ async function initializeApp() {
       await dashboardBorrowedBooks();
       await dashboardOverdueBooks();
       await dashboardTotalStudents();
+      await dashboardNotifications();
+      await dashboardRecentActivity();
 
     } else if (path.endsWith("bookshelf-books.html")) {
       await renderBooks();

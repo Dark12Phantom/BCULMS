@@ -261,6 +261,7 @@ async function addStudentToDB() {
     const studentIdInput = modal.querySelector('input[name="student_id"]');
     const studentNameInput = modal.querySelector('input[name="student_name"]');
     const courseSelect = modal.querySelector('select[name="course_id"]');
+    const deptSelect = document.getElementById('studentDepartmentSelect');
     const yearInput = modal.querySelector('input[name="student_year"]');
     const contactInput = modal.querySelector('input[name="contact_number"]');
 
@@ -282,6 +283,24 @@ async function addStudentToDB() {
       !studentData.contact_number
     ) {
       showModalAlert("Please fill in all required fields.", "warning");
+      return;
+    }
+
+    // Validate department selection and course belongs to department
+    const selectedDept = (deptSelect && deptSelect.value) ? deptSelect.value : '';
+    if (!selectedDept) {
+      showModalAlert("Please select a Department.", "warning");
+      return;
+    }
+    try {
+      const courseRes = await insertDB('select', 'course', '*', { course_id: studentData.course_id });
+      const courseRow = courseRes?.data?.[0];
+      if (!courseRow || courseRow.department_id !== selectedDept) {
+        showModalAlert("Selected course does not belong to the chosen department.", "warning");
+        return;
+      }
+    } catch (e) {
+      showModalAlert("Unable to validate course and department.", "danger");
       return;
     }
 

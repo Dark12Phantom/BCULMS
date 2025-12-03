@@ -1,6 +1,8 @@
 let currentPage = 1;
 const rowsPerPage = 25;
 
+function formatDateTime(s) { return s || ''; }
+
 async function changePage(page) {
   currentPage = page;
   await renderBooks(currentPage, rowsPerPage);
@@ -136,10 +138,27 @@ async function renderStudents(page = 1, rowsPerPage = 25) {
       });
     }
 
-    // Pagination
+    const search = (typeof getCurrentSearchQuery === 'function') ? (getCurrentSearchQuery() || '') : '';
+    let filtered = students;
+    if (search) {
+      const q = search.toLowerCase();
+      filtered = students.filter(stu => {
+        const courseInfo = courseMap[stu.course_id] || { name: '', department_id: '' };
+        const departmentName = departmentMap[courseInfo.department_id] || '';
+        const fields = [
+          (stu.student_id || ''),
+          (stu.student_name || ''),
+          String(stu.student_year || ''),
+          (courseInfo.name || ''),
+          (departmentName || ''),
+          (stu.status || '')
+        ].map(s => s.toLowerCase());
+        return fields.some(s => s.includes(q));
+      });
+    }
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    const pageRows = students.slice(start, end);
+    const pageRows = filtered.slice(start, end);
 
     if (pageRows.length > 0) {
       pageRows.forEach(student => {
@@ -163,8 +182,8 @@ async function renderStudents(page = 1, rowsPerPage = 25) {
     }
 
     // Render pagination
-    await renderPager(students.length, rowsPerPage, page, "pager-top");
-    await renderPager(students.length, rowsPerPage, page, "pager-bottom");
+    await renderPager(filtered.length, rowsPerPage, page, "pager-top");
+    await renderPager(filtered.length, rowsPerPage, page, "pager-bottom");
 
   } catch (error) {
     console.error("Failed to render students:", error);
@@ -214,11 +233,21 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
     );
     const txs = txBorrowRes?.data || [];
     const latestByCopy = {};
+    const parse12 = (s) => {
+      if (!s) return 0;
+      const m = s.match(/^(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})\s(AM|PM)$/);
+      if (!m) return 0;
+      let [_, Y, M, D, H, I, S, A] = m;
+      let h = parseInt(H, 10);
+      if (A === 'AM' && h === 12) h = 0; else if (A === 'PM' && h !== 12) h += 12;
+      const date = new Date(Date.UTC(parseInt(Y,10), parseInt(M,10)-1, parseInt(D,10), h-8, parseInt(I,10), parseInt(S,10)));
+      return date.getTime();
+    };
     txs.forEach((t) => {
       const key = t.copy_id;
       if (!key) return;
       const ts = t.transaction_type === 'Return' ? (t.returned_at || '') : (t.borrowed_at || t.due_at || '');
-      const time = ts ? Date.parse(ts) : 0;
+      const time = parse12(ts);
       const prev = latestByCopy[key];
       if (!prev || time > prev.time) {
         latestByCopy[key] = { type: t.transaction_type, borrower_id: t.borrower_id, time };
@@ -246,10 +275,28 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
       studentNames[student.student_id] = student.student_name;
     });
 
-    // Pagination
+    const search = (typeof getCurrentSearchQuery === 'function') ? (getCurrentSearchQuery() || '') : '';
+    let filtered = copies;
+    if (search) {
+      const q = search.toLowerCase();
+      filtered = copies.filter(copy => {
+        const title = bookTitles[parseInt(copy.book_id, 10)] || '';
+        const studentId = copyToStudent[copy.copy_id];
+        const borrower = studentId ? (studentNames[studentId] || studentId) : '';
+        const fields = [
+          (copy.copy_id || ''),
+          String(copy.book_id || ''),
+          (title || ''),
+          (copy.status || ''),
+          (borrower || ''),
+          (copy.condition || '')
+        ].map(s => s.toLowerCase());
+        return fields.some(s => s.includes(q));
+      });
+    }
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    const pageRows = copies.slice(start, end);
+    const pageRows = filtered.slice(start, end);
 
     if (pageRows.length > 0) {
       pageRows.forEach((copy) => {
@@ -278,8 +325,8 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
         '<tr><td colspan="6">No book copies on record</td></tr>';
     }
 
-    await renderPager(copies.length, rowsPerPage, page, "pager-top");
-    await renderPager(copies.length, rowsPerPage, page, "pager-bottom");
+    await renderPager(filtered.length, rowsPerPage, page, "pager-top");
+    await renderPager(filtered.length, rowsPerPage, page, "pager-bottom");
   } catch (error) {
     console.error("Failed to render book copies:", error);
     bookCopyTBody.innerHTML =
@@ -299,6 +346,28 @@ async function renderBorrowTransactions() {
     if (selectedType) {
       txs = txs.filter(t => (t.transaction_type || '') === selectedType);
     }
+    const search = (typeof getCurrentSearchQuery === 'function') ? (getCurrentSearchQuery() || '') : '';
+    const booksRes = await insertDB('select', 'books', 'book_id, title', null);
+    const studentsRes = await insertDB('select', 'students', 'student_id, student_name', null);
+    const bookTitles = {}; (booksRes?.data || []).forEach(b => { bookTitles[b.book_id] = b.title; });
+    const studentNames = {}; (studentsRes?.data || []).forEach(s => { studentNames[s.student_id] = s.student_name; });
+    if (search) {
+      const q = search.toLowerCase();
+      txs = txs.filter(t => {
+        const fields = [
+          (t.transaction_type || ''),
+          (bookTitles[t.book_id] || ''),
+          (t.isbn || ''),
+          (studentNames[t.borrower_id] || ''),
+          (t.borrower_id || ''),
+          (t.staff_id || ''),
+          (t.borrowed_at || ''),
+          (t.due_at || ''),
+          (t.returned_at || '')
+        ].map(s => s.toLowerCase());
+        return fields.some(s => s.includes(q));
+      });
+    }
     txs.sort((a, b) => {
       const ka = (a.transaction_type === 'Return' ? a.returned_at : a.borrowed_at) || a.due_at || '';
       const kb = (b.transaction_type === 'Return' ? b.returned_at : b.borrowed_at) || b.due_at || '';
@@ -306,10 +375,6 @@ async function renderBorrowTransactions() {
       const tb = kb ? Date.parse(kb) : 0;
       return tb - ta;
     });
-    const booksRes = await insertDB('select', 'books', 'book_id, title', null);
-    const studentsRes = await insertDB('select', 'students', 'student_id, student_name', null);
-    const bookTitles = {}; (booksRes?.data || []).forEach(b => { bookTitles[b.book_id] = b.title; });
-    const studentNames = {}; (studentsRes?.data || []).forEach(s => { studentNames[s.student_id] = s.student_name; });
     txs.forEach(t => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -318,9 +383,9 @@ async function renderBorrowTransactions() {
         <td>${(t.isbn || '')}</td>
         <td>${studentNames[t.borrower_id] || ''}</td>
         <td>${t.borrower_id}</td>
-        <td>${t.borrowed_at || ''}</td>
-        <td>${t.due_at || ''}</td>
-        <td>${t.returned_at || ''}</td>
+        <td>${formatDateTime(t.borrowed_at) || ''}</td>
+        <td>${formatDateTime(t.due_at) || ''}</td>
+        <td>${formatDateTime(t.returned_at) || ''}</td>
         <td>${t.staff_id || ''}</td>
       `;
       tbody.appendChild(tr);
@@ -344,7 +409,22 @@ async function renderLibraryTransactions() {
   tbody.innerHTML = '';
   try {
     const txRes = await insertDB('select', 'transaction_library', '*', null);
-    const txs = (txRes?.data || []).sort((a, b) => {
+    let txs = (txRes?.data || []).slice();
+    const search = (typeof getCurrentSearchQuery === 'function') ? (getCurrentSearchQuery() || '') : '';
+    if (search) {
+      const q = search.toLowerCase();
+      txs = txs.filter(t => {
+        const fields = [
+          (t.operation_type || ''),
+          (t.before_values || ''),
+          (t.after_values || ''),
+          (t.staff_id || ''),
+          (t.timestamp || '')
+        ].map(s => s.toLowerCase());
+        return fields.some(s => s.includes(q));
+      });
+    }
+    txs = txs.sort((a, b) => {
       const ta = a.timestamp ? Date.parse(a.timestamp) : 0;
       const tb = b.timestamp ? Date.parse(b.timestamp) : 0;
       return tb - ta;
@@ -380,7 +460,7 @@ async function renderLibraryTransactions() {
         <td>${t.operation_type}</td>
         <td>${details}</td>
         <td>${t.staff_id || ''}</td>
-        <td>${t.timestamp || ''}</td>
+        <td>${formatDateTime(t.timestamp) || ''}</td>
       `;
       tbody.appendChild(tr);
     });

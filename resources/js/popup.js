@@ -20,25 +20,45 @@ async function addStudentPopup() {
   if (addStudentModal) {
     addStudentModal.addEventListener("show.bs.modal", async function () {
       const courseSelect = document.getElementById("courseSelect");
+      const deptSelect = document.getElementById("studentDepartmentSelect");
       try {
-        const result = await getCourses();
-        const courses = result.data || [];
-
-        courseSelect.innerHTML = '<option value="">Select Course</option>';
-
-        courses.forEach((course) => {
-          const option = document.createElement("option");
-          option.value = course.course_id;
-          option.textContent = course.name;
-          courseSelect.appendChild(option);
+        // Load departments
+        const deptRes = await getDepartments();
+        const departments = deptRes.data || [];
+        deptSelect.innerHTML = '<option value="">Select Department</option>';
+        departments.forEach((dept) => {
+          const opt = document.createElement("option");
+          opt.value = dept.department_id;
+          opt.textContent = dept.name;
+          deptSelect.appendChild(opt);
         });
 
-        courseSelect.disabled = false;
+        // Load courses and filter by department when selected
+        const result = await getCourses();
+        const courses = result.data || [];
+        const renderCourses = (deptId) => {
+          courseSelect.innerHTML = '<option value="">Select Course</option>';
+          const filtered = deptId ? courses.filter(c => c.department_id === deptId) : [];
+          filtered.forEach((course) => {
+            const option = document.createElement("option");
+            option.value = course.course_id;
+            option.textContent = course.name;
+            courseSelect.appendChild(option);
+          });
+          courseSelect.disabled = filtered.length === 0;
+        };
+        renderCourses(null);
+        courseSelect.disabled = true;
+        deptSelect.disabled = false;
+        deptSelect.addEventListener('change', (e) => {
+          renderCourses(e.target.value);
+        });
       } catch (error) {
         console.error("Error loading courses:", error);
-        courseSelect.innerHTML =
-          '<option value="">Error loading courses</option>';
+        courseSelect.innerHTML = '<option value="">Error loading courses</option>';
+        deptSelect.innerHTML = '<option value="">Error loading departments</option>';
         courseSelect.disabled = true;
+        deptSelect.disabled = true;
       }
     });
   }
@@ -63,7 +83,7 @@ async function bookContentLoader() {
           <div class="modal-body p-0">
             <ul class="list-group list-group-flush mb-0">
               <li class="list-group-item list-group-item-action" id="editBook">Edit Details</li>
-              <li class="list-group-item list-group-item-action text-danger" id="deleteBook">Delete</li>
+              <li class="list-group-item list-group-item-action text-danger" id="deleteBook">Archive</li>
             </ul>
           </div>
         </div>
@@ -163,16 +183,7 @@ async function bookCopyModalLoader() {
         showModalAlert("Copy is not available.", "warning");
         return;
       }
-      const existingBorrow = await insertDB(
-        "select",
-        "transactions_borrow",
-        "transaction_id",
-        { copy_id: copyId, date_returned: null }
-      );
-      if (existingBorrow.data && existingBorrow.data.length > 0) {
-        showModalAlert("Copy already has an active borrow.", "warning");
-        return;
-      }
+      // Status check (Available) already ensures no active borrow
       const studentsResult = await getStudents();
       const students = studentsResult.data || [];
       const modal = document.createElement("div");
@@ -219,9 +230,23 @@ async function bookCopyModalLoader() {
         const studentId = modal.querySelector("#borrowStudentSelect").value;
         const dueDate = modal.querySelector("#borrowDueDate").value;
         const borrowedDate = fmt(today);
-        const borrowedAtUTC = new Date().toISOString();
-        const dueAtUTC = new Date(dueDate + 'T00:00:00Z').toISOString();
-        if (new Date(dueAtUTC) < new Date(borrowedAtUTC)) {
+        const formatPHT12 = (date) => {
+          const base = (date instanceof Date) ? date : new Date(date);
+          const d = new Date(base.getTime() + 8 * 60 * 60 * 1000);
+          const yyyy = d.getUTCFullYear();
+          const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+          const dd = String(d.getUTCDate()).padStart(2, '0');
+          let h = d.getUTCHours();
+          const ampm = h >= 12 ? 'PM' : 'AM';
+          h = h % 12; if (h === 0) h = 12;
+          const hh = String(h).padStart(2, '0');
+          const min = String(d.getUTCMinutes()).padStart(2, '0');
+          const sec = String(d.getUTCSeconds()).padStart(2, '0');
+          return `${yyyy}-${mm}-${dd} ${hh}:${min}:${sec} ${ampm}`;
+        };
+        const borrowedAtStr = formatPHT12(new Date());
+        const dueAtStr = `${dueDate} 12:00:00 AM`;
+        if (new Date(dueDate) < new Date(fmt(today))) {
           showModalAlert("Due date cannot be before today.", "warning");
           return;
         }
@@ -236,16 +261,16 @@ async function bookCopyModalLoader() {
               copy_id: copyId,
               borrower_id: studentId,
               transaction_type: "Borrow",
-              borrowed_at: borrowedAtUTC,
-              due_at: dueAtUTC,
+              borrowed_at: borrowedAtStr,
+              due_at: dueAtStr,
               returned_at: null,
               staff_id: user.id,
             });
             await insertDB("update", "book_copy", {
               status: "Borrowed",
-              borrowed_date: borrowedDate,
+              borrowed_date: borrowedAtStr,
               returned_date: null,
-              due_date: dueDate,
+              due_date: dueAtStr,
             }, { copy_id: copyId });
           });
           bsModal.hide();
@@ -318,7 +343,21 @@ async function bookCopyModalLoader() {
       modal.querySelector("#confirmReturnBtn").addEventListener("click", async () => {
         const condition = modal.querySelector("#returnConditionSelect").value;
         const returnDate = modal.querySelector("#returnDateInput").value || fmt(today);
-        const returnedAtUTC = new Date().toISOString();
+        const formatPHT12 = (date) => {
+          const base = (date instanceof Date) ? date : new Date(date);
+          const d = new Date(base.getTime() + 8 * 60 * 60 * 1000);
+          const yyyy = d.getUTCFullYear();
+          const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+          const dd = String(d.getUTCDate()).padStart(2, '0');
+          let h = d.getUTCHours();
+          const ampm = h >= 12 ? 'PM' : 'AM';
+          h = h % 12; if (h === 0) h = 12;
+          const hh = String(h).padStart(2, '0');
+          const min = String(d.getUTCMinutes()).padStart(2, '0');
+          const sec = String(d.getUTCSeconds()).padStart(2, '0');
+          return `${yyyy}-${mm}-${dd} ${hh}:${min}:${sec} ${ampm}`;
+        };
+        const returnedAtStr = formatPHT12(new Date());
         try {
           const copyRow = await insertDB("select", "book_copy", "*", { copy_id: copyId });
           const copyData = copyRow?.data?.[0];
@@ -328,7 +367,7 @@ async function bookCopyModalLoader() {
           let borrowerId = null;
           txs.forEach(t => {
             const ts = t.transaction_type === 'Return' ? (t.returned_at || '') : (t.borrowed_at || t.due_at || '');
-            const time = ts ? Date.parse(ts) : 0;
+            const time = ts ? Date.parse(ts.replace(/ AM| PM/, '')) : 0;
             t._time = time;
           });
           txs.sort((a,b)=> (b._time||0)-(a._time||0));
@@ -344,18 +383,68 @@ async function bookCopyModalLoader() {
               transaction_type: "Return",
               borrowed_at: null,
               due_at: null,
-              returned_at: returnedAtUTC,
+              returned_at: returnedAtStr,
               staff_id: user.id,
             });
-            await insertDB("update", "book_copy", { status: "Available", condition: condition, returned_date: returnedAtUTC, borrowed_date: null, due_date: null }, { copy_id: copyId });
+            await insertDB("update", "book_copy", { status: "Available", condition: condition, returned_date: returnedAtStr, borrowed_date: null, due_date: null }, { copy_id: copyId });
           });
+          const bookRow = await insertDB("select", "books", "status", { book_id: bookId });
+          const bookStatus = bookRow?.data?.[0]?.status || "";
+          if ((bookStatus || "").toLowerCase() === "archived") {
+            const nowStr = returnedAtStr;
+            const copyRow2 = await insertDB("select", "book_copy", "*", { copy_id: copyId });
+            const copyData2 = copyRow2?.data?.[0];
+            const txRes2 = await insertDB("select", "transaction_borrow", "*", { copy_id: copyId });
+            const txs2 = txRes2?.data || [];
+            await runDBTransaction(async () => {
+              for (const t of txs2) {
+                if (t.returned_at) {
+                  await insertDB("insert", "archived_transaction_borrow", {
+                    book_id: t.book_id,
+                    copy_id: t.copy_id,
+                    borrower_id: t.borrower_id,
+                    transaction_type: t.transaction_type,
+                    borrowed_at: t.borrowed_at,
+                    due_at: t.due_at,
+                    returned_at: t.returned_at,
+                    staff_id: t.staff_id,
+                    archived_at: nowStr,
+                    archive_reason: "Book Archived",
+                  });
+                }
+              }
+              for (const t of txs2) {
+                if (t.returned_at) {
+                  await insertDB("delete", "transaction_borrow", null, { id: t.id });
+                }
+              }
+              await insertDB("insert", "archived_book_copy", {
+                copy_id: copyData2.copy_id,
+                book_id: copyData2.book_id,
+                status: copyData2.status,
+                condition: copyData2.condition,
+                borrowed_date: copyData2.borrowed_date || null,
+                returned_date: copyData2.returned_date || null,
+                due_date: copyData2.due_date || null,
+                archived_at: nowStr,
+              });
+              await insertDB("delete", "book_copy", null, { copy_id: copyId });
+            });
+          }
           bsModal.hide();
           modal.remove();
           const cells = selectedRow.querySelectorAll("td");
-          if (cells[3]) cells[3].textContent = "Available";
-          if (cells[4]) cells[4].textContent = "—";
-          if (cells[5]) cells[5].textContent = condition;
-          showModalAlert("Copy set as returned.", "success");
+          const bookArchived = (bookStatus || "").toLowerCase() === "archived";
+          if (bookArchived) {
+            selectedRow.remove();
+            showModalAlert("Copy returned and archived.", "success");
+            if (typeof renderBookCopies === 'function') { await renderBookCopies(1); }
+          } else {
+            if (cells[3]) cells[3].textContent = "Available";
+            if (cells[4]) cells[4].textContent = "—";
+            if (cells[5]) cells[5].textContent = condition;
+            showModalAlert("Copy set as returned.", "success");
+          }
         } catch (error) {
           showModalAlert("Failed to set returned: " + error.message, "danger");
         }
@@ -579,19 +668,19 @@ async function showBookPopup(action, id) {
         .textContent.trim();
 
       openModal(
-        "Confirm Deletion",
+        "Archive Book",
         `
-        <p>Delete book <strong>${rowTitle}</strong>?</p>
-        <button id="confirmDelete" class="btn btn-danger mt-2">Yes, delete it</button>
+        <p>Archive book <strong>${rowTitle}</strong>? Copies that are not borrowed will be archived. Borrowed copies remain until returned.</p>
+        <button id="confirmArchive" class="btn btn-danger mt-2">Yes, archive it</button>
       `
       );
 
-      document.getElementById("confirmDelete").onclick = async () => {
+      document.getElementById("confirmArchive").onclick = async () => {
         try {
-          await deleteBook(id);
+          await archiveBook(id);
           deleteRow.remove();
           closeModal();
-          alert(`Book "${rowTitle}" and its copies have been deleted.`);
+          alert(`Book "${rowTitle}" has been archived. Borrowed copies will archive upon return.`);
         } catch (err) {
           alert(err.message);
           closeModal();
@@ -794,13 +883,14 @@ async function showStudentBorrowedBooks(studentId) {
       const info = copyToBook[t.copy_id] || {};
       const title = bookTitles[info.book_id] || "Unknown";
       const status = t.transaction_type === 'Return' ? `Returned (${t.returned_at || ''})` : 'Borrowed';
+      const fmt12 = (s) => s || '';
       return `
         <tr>
           <td>${t.copy_id}</td>
           <td>${info.book_id || ""}</td>
           <td>${title}</td>
-          <td>${t.borrowed_at || ""}</td>
-          <td>${t.due_at || ""}</td>
+          <td>${fmt12(t.borrowed_at) || ""}</td>
+          <td>${fmt12(t.due_at) || ""}</td>
           <td>${status}</td>
         </tr>`;
     }).join("");

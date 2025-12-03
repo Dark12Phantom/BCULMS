@@ -95,6 +95,43 @@ class DatabaseSchema {
     db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_book ON "transaction_library"("book_id");`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_type ON "transaction_library"("operation_type");`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_time ON "transaction_library"("timestamp");`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS "archived_book_copy" (
+      "archive_copy_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+      "copy_id" TEXT NOT NULL UNIQUE,
+      "book_id" INTEGER NOT NULL,
+      "status" TEXT,
+      "condition" TEXT,
+      "borrowed_date" TEXT,
+      "returned_date" TEXT,
+      "due_date" TEXT,
+      "archived_at" TEXT NOT NULL,
+      FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE
+    );`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_archived_book_copy_book ON "archived_book_copy"("book_id");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_archived_book_copy_copy ON "archived_book_copy"("copy_id");`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS "archived_transaction_borrow" (
+      "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+      "book_id" INTEGER NOT NULL,
+      "copy_id" TEXT,
+      "borrower_id" TEXT,
+      "transaction_type" TEXT NOT NULL,
+      "borrowed_at" TEXT,
+      "due_at" TEXT,
+      "returned_at" TEXT,
+      "staff_id" TEXT,
+      "archived_at" TEXT NOT NULL,
+      "archive_reason" TEXT NOT NULL,
+      FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE,
+      FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE SET NULL,
+      FOREIGN KEY("copy_id") REFERENCES "book_copy"("copy_id") ON DELETE SET NULL
+    );`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_book ON "archived_transaction_borrow"("book_id");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_copy ON "archived_transaction_borrow"("copy_id");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_borrower ON "archived_transaction_borrow"("borrower_id");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_type ON "archived_transaction_borrow"("transaction_type");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_dates ON "archived_transaction_borrow"("borrowed_at", "returned_at", "due_at");`);
   }
 }
 
@@ -148,6 +185,43 @@ async function applyAdditionalSchema() {
   db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_book ON "transaction_library"("book_id");`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_type ON "transaction_library"("operation_type");`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_library_time ON "transaction_library"("timestamp");`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS "archived_book_copy" (
+    "archive_copy_id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "copy_id" TEXT NOT NULL UNIQUE,
+    "book_id" INTEGER NOT NULL,
+    "status" TEXT,
+    "condition" TEXT,
+    "borrowed_date" TEXT,
+    "returned_date" TEXT,
+    "due_date" TEXT,
+    "archived_at" TEXT NOT NULL,
+    FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE
+  );`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_archived_book_copy_book ON "archived_book_copy"("book_id");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_archived_book_copy_copy ON "archived_book_copy"("copy_id");`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS "archived_transaction_borrow" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "book_id" INTEGER NOT NULL,
+    "copy_id" TEXT,
+    "borrower_id" TEXT,
+    "transaction_type" TEXT NOT NULL,
+    "borrowed_at" TEXT,
+    "due_at" TEXT,
+    "returned_at" TEXT,
+    "staff_id" TEXT,
+    "archived_at" TEXT NOT NULL,
+    "archive_reason" TEXT NOT NULL,
+    FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE,
+    FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE SET NULL,
+    FOREIGN KEY("copy_id") REFERENCES "book_copy"("copy_id") ON DELETE SET NULL
+  );`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_book ON "archived_transaction_borrow"("book_id");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_copy ON "archived_transaction_borrow"("copy_id");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_borrower ON "archived_transaction_borrow"("borrower_id");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_type ON "archived_transaction_borrow"("transaction_type");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_dates ON "archived_transaction_borrow"("borrowed_at", "returned_at", "due_at");`);
 }
 if (typeof window !== "undefined") {
   window.BCULMS = window.BCULMS || {};
