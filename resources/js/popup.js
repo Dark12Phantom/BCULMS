@@ -231,15 +231,9 @@ async function bookCopyModalLoader() {
           const bookId = copyData?.book_id;
           const user = await requireRole(["Admin", "Librarian"]);
           await runDBTransaction(async () => {
-            await insertDB("insert", "transactions_borrow", {
-              student_id: studentId,
-              copy_id: copyId,
-              date_borrowed: borrowedDate,
-              date_returned: null,
-              due_date: dueDate,
-            });
             await insertDB("insert", "transaction_borrow", {
               book_id: bookId,
+              copy_id: copyId,
               borrower_id: studentId,
               transaction_type: "Borrow",
               borrowed_at: borrowedAtUTC,
@@ -326,22 +320,26 @@ async function bookCopyModalLoader() {
         const returnDate = modal.querySelector("#returnDateInput").value || fmt(today);
         const returnedAtUTC = new Date().toISOString();
         try {
-          const activeBorrow = await insertDB("select", "transactions_borrow", "transaction_id", { copy_id: copyId, date_returned: null });
-          if (!activeBorrow.data || activeBorrow.data.length === 0) {
-            showModalAlert("No active borrow transaction found.", "warning");
-            return;
-          }
-          const txId = activeBorrow.data[0].transaction_id;
           const copyRow = await insertDB("select", "book_copy", "*", { copy_id: copyId });
           const copyData = copyRow?.data?.[0];
           const bookId = copyData?.book_id;
-          const borrowRow = await insertDB("select", "transactions_borrow", "student_id", { transaction_id: txId });
-          const borrowerId = borrowRow?.data?.[0]?.student_id;
+          const txRes = await insertDB("select", "transaction_borrow", "copy_id, borrower_id, transaction_type, borrowed_at, returned_at, due_at", { copy_id: copyId });
+          const txs = txRes?.data || [];
+          let borrowerId = null;
+          txs.forEach(t => {
+            const ts = t.transaction_type === 'Return' ? (t.returned_at || '') : (t.borrowed_at || t.due_at || '');
+            const time = ts ? Date.parse(ts) : 0;
+            t._time = time;
+          });
+          txs.sort((a,b)=> (b._time||0)-(a._time||0));
+          for (const t of txs) {
+            if (t.transaction_type === 'Borrow') { borrowerId = t.borrower_id; break; }
+          }
           const user = await requireRole(["Admin", "Librarian"]);
           await runDBTransaction(async () => {
-            await insertDB("update", "transactions_borrow", { date_returned: returnedAtUTC }, { transaction_id: txId });
             await insertDB("insert", "transaction_borrow", {
               book_id: bookId,
+              copy_id: copyId,
               borrower_id: borrowerId,
               transaction_type: "Return",
               borrowed_at: null,
@@ -784,7 +782,7 @@ async function showStudentDetails(studentId) {
 
 async function showStudentBorrowedBooks(studentId) {
   try {
-    const txRes = await insertDB("select", "transactions_borrow", "copy_id, date_borrowed, due_date, date_returned", { student_id: studentId });
+    const txRes = await insertDB("select", "transaction_borrow", "copy_id, borrower_id, transaction_type, borrowed_at, due_at, returned_at", { borrower_id: studentId });
     const txs = txRes?.data || [];
     const copiesRes = await insertDB("select", "book_copy", "copy_id, book_id, status", null);
     const booksRes = await insertDB("select", "books", "book_id, title", null);
@@ -795,14 +793,14 @@ async function showStudentBorrowedBooks(studentId) {
     const rowsHtml = txs.map(t => {
       const info = copyToBook[t.copy_id] || {};
       const title = bookTitles[info.book_id] || "Unknown";
-      const status = t.date_returned ? `Returned (${t.date_returned})` : "Borrowed";
+      const status = t.transaction_type === 'Return' ? `Returned (${t.returned_at || ''})` : 'Borrowed';
       return `
         <tr>
           <td>${t.copy_id}</td>
           <td>${info.book_id || ""}</td>
           <td>${title}</td>
-          <td>${t.date_borrowed || ""}</td>
-          <td>${t.due_date || ""}</td>
+          <td>${t.borrowed_at || ""}</td>
+          <td>${t.due_at || ""}</td>
           <td>${status}</td>
         </tr>`;
     }).join("");

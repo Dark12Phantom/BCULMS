@@ -65,6 +65,7 @@ class DatabaseSchema {
     db.run(`CREATE TABLE IF NOT EXISTS "transaction_borrow" (
       "id" INTEGER PRIMARY KEY AUTOINCREMENT,
       "book_id" INTEGER NOT NULL,
+      "copy_id" TEXT,
       "borrower_id" TEXT NOT NULL,
       "transaction_type" TEXT NOT NULL,
       "borrowed_at" TEXT,
@@ -72,9 +73,11 @@ class DatabaseSchema {
       "returned_at" TEXT,
       "staff_id" TEXT NOT NULL,
       FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE,
-      FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE CASCADE
+      FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE CASCADE,
+      FOREIGN KEY("copy_id") REFERENCES "book_copy"("copy_id") ON DELETE SET NULL
     );`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_book ON "transaction_borrow"("book_id");`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_copy ON "transaction_borrow"("copy_id");`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_borrower ON "transaction_borrow"("borrower_id");`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_type ON "transaction_borrow"("transaction_type");`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_dates ON "transaction_borrow"("borrowed_at", "returned_at", "due_at");`);
@@ -103,6 +106,7 @@ async function applyAdditionalSchema() {
   db.run(`CREATE TABLE IF NOT EXISTS "transaction_borrow" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "book_id" INTEGER NOT NULL,
+    "copy_id" TEXT,
     "borrower_id" TEXT NOT NULL,
     "transaction_type" TEXT NOT NULL,
     "borrowed_at" TEXT,
@@ -110,12 +114,26 @@ async function applyAdditionalSchema() {
     "returned_at" TEXT,
     "staff_id" TEXT NOT NULL,
     FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE,
-    FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE CASCADE
+    FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE CASCADE,
+    FOREIGN KEY("copy_id") REFERENCES "book_copy"("copy_id") ON DELETE SET NULL
   );`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_book ON "transaction_borrow"("book_id");`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_copy ON "transaction_borrow"("copy_id");`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_borrower ON "transaction_borrow"("borrower_id");`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_type ON "transaction_borrow"("transaction_type");`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_dates ON "transaction_borrow"("borrowed_at", "returned_at", "due_at");`);
+
+  let stmt = db.prepare("PRAGMA table_info(transaction_borrow)");
+  let hasCopyId = false;
+  while (stmt.step()) {
+    const row = stmt.getAsObject();
+    if (row.name === 'copy_id') hasCopyId = true;
+  }
+  stmt.free();
+  if (!hasCopyId) {
+    try { db.run(`ALTER TABLE transaction_borrow ADD COLUMN copy_id TEXT;`); } catch (_) {}
+  }
+  try { db.run(`CREATE INDEX IF NOT EXISTS idx_transaction_borrow_copy ON "transaction_borrow"("copy_id");`); } catch (_) {}
 
   db.run(`CREATE TABLE IF NOT EXISTS "transaction_library" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,

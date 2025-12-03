@@ -206,20 +206,28 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
       bookTitles[book.book_id] = book.title;
     });
 
-    // Get active borrows (where returned_date IS NULL)
-    const borrowsResult = await insertDB(
+    const txBorrowRes = await insertDB(
       "select",
-      "transactions_borrow",
-      "copy_id, student_id",
-      { date_returned: null }
+      "transaction_borrow",
+      "copy_id, borrower_id, transaction_type, borrowed_at, returned_at, due_at",
+      null
     );
-
-    const borrows = borrowsResult?.data || [];
-
-    // Create a map of copy_id to student_id for active borrows
+    const txs = txBorrowRes?.data || [];
+    const latestByCopy = {};
+    txs.forEach((t) => {
+      const key = t.copy_id;
+      if (!key) return;
+      const ts = t.transaction_type === 'Return' ? (t.returned_at || '') : (t.borrowed_at || t.due_at || '');
+      const time = ts ? Date.parse(ts) : 0;
+      const prev = latestByCopy[key];
+      if (!prev || time > prev.time) {
+        latestByCopy[key] = { type: t.transaction_type, borrower_id: t.borrower_id, time };
+      }
+    });
     const copyToStudent = {};
-    borrows.forEach((borrow) => {
-      copyToStudent[borrow.copy_id] = borrow.student_id;
+    Object.keys(latestByCopy).forEach((cid) => {
+      const info = latestByCopy[cid];
+      if (info.type === 'Borrow') copyToStudent[cid] = info.borrower_id;
     });
 
     // Get all students
@@ -249,7 +257,6 @@ async function renderBookCopies(page = 1, rowsPerPage = 25) {
         const bookId = parseInt(copy.book_id, 10);
         const title = bookTitles[bookId] || "Unknown";
 
-        // Get borrower name through copy_id -> student_id -> student_name
         const studentId = copyToStudent[copy.copy_id];
         const borrowedBy = studentId
           ? studentNames[studentId] || "Unknown Student"

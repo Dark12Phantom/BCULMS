@@ -53,16 +53,19 @@ BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS "transaction_borrow" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "book_id" INTEGER NOT NULL,
+  "copy_id" TEXT,
   "borrower_id" TEXT NOT NULL,
-  "transaction_type" TEXT NOT NULL, -- Borrow | Return
-  "borrowed_at" TEXT,               -- UTC ISO timestamp
-  "due_at" TEXT,                    -- UTC ISO timestamp
-  "returned_at" TEXT,               -- UTC ISO timestamp
+  "transaction_type" TEXT NOT NULL,
+  "borrowed_at" TEXT,
+  "due_at" TEXT,
+  "returned_at" TEXT,
   "staff_id" TEXT NOT NULL,
   FOREIGN KEY("book_id") REFERENCES "books"("book_id") ON DELETE CASCADE,
-  FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE CASCADE
+  FOREIGN KEY("borrower_id") REFERENCES "students"("student_id") ON DELETE CASCADE,
+  FOREIGN KEY("copy_id") REFERENCES "book_copy"("copy_id") ON DELETE SET NULL
 );
 CREATE INDEX IF NOT EXISTS idx_transaction_borrow_book ON "transaction_borrow"("book_id");
+CREATE INDEX IF NOT EXISTS idx_transaction_borrow_copy ON "transaction_borrow"("copy_id");
 CREATE INDEX IF NOT EXISTS idx_transaction_borrow_borrower ON "transaction_borrow"("borrower_id");
 CREATE INDEX IF NOT EXISTS idx_transaction_borrow_type ON "transaction_borrow"("transaction_type");
 CREATE INDEX IF NOT EXISTS idx_transaction_borrow_dates ON "transaction_borrow"("borrowed_at", "returned_at", "due_at");
