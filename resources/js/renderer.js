@@ -292,6 +292,13 @@ async function renderBorrowTransactions() {
     if (selectedType) {
       txs = txs.filter(t => (t.transaction_type || '') === selectedType);
     }
+    txs.sort((a, b) => {
+      const ka = (a.transaction_type === 'Return' ? a.returned_at : a.borrowed_at) || a.due_at || '';
+      const kb = (b.transaction_type === 'Return' ? b.returned_at : b.borrowed_at) || b.due_at || '';
+      const ta = ka ? Date.parse(ka) : 0;
+      const tb = kb ? Date.parse(kb) : 0;
+      return tb - ta;
+    });
     const booksRes = await insertDB('select', 'books', 'book_id, title', null);
     const studentsRes = await insertDB('select', 'students', 'student_id, student_name', null);
     const bookTitles = {}; (booksRes?.data || []).forEach(b => { bookTitles[b.book_id] = b.title; });
@@ -330,7 +337,11 @@ async function renderLibraryTransactions() {
   tbody.innerHTML = '';
   try {
     const txRes = await insertDB('select', 'transaction_library', '*', null);
-    const txs = txRes?.data || [];
+    const txs = (txRes?.data || []).sort((a, b) => {
+      const ta = a.timestamp ? Date.parse(a.timestamp) : 0;
+      const tb = b.timestamp ? Date.parse(b.timestamp) : 0;
+      return tb - ta;
+    });
     const booksRes = await insertDB('select', 'books', 'book_id, title, author', null);
     const bookInfo = {}; (booksRes?.data || []).forEach(b => { bookInfo[b.book_id] = { title: b.title, author: b.author }; });
     txs.forEach(t => {

@@ -82,8 +82,12 @@ class LibraryOperations {
    */
   async insertBook(bookData, numberOfCopies = 1) {
     const user = await requireRole(["Admin", "Librarian"]);
+    const bookInsert = {};
+    ["book_id", "title", "author", "publication_date", "type", "department_id", "status"].forEach((k) => {
+      if (bookData[k] !== undefined && bookData[k] !== null) bookInsert[k] = bookData[k];
+    });
     return await runDBTransaction(async () => {
-      const bookResult = await insertDB("insert", "books", bookData);
+      const bookResult = await insertDB("insert", "books", bookInsert);
       const newBookId = bookResult.lastInsertRowid || bookResult.insertId;
       if (!newBookId) {
         throw new Error("No book_id returned from insertDB");

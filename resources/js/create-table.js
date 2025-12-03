@@ -57,6 +57,7 @@ class DatabaseSchema {
 	"course_id"	TEXT NOT NULL,
 	"student_year"	INTEGER NOT NULL,
 	"contact_number"	NUMERIC NOT NULL,
+	"status"	TEXT,
 	PRIMARY KEY("student_id"),
 	FOREIGN KEY("course_id") REFERENCES "course"("course_id"));`);
 

@@ -324,7 +324,7 @@ async function bookCopyModalLoader() {
       modal.querySelector("#confirmReturnBtn").addEventListener("click", async () => {
         const condition = modal.querySelector("#returnConditionSelect").value;
         const returnDate = modal.querySelector("#returnDateInput").value || fmt(today);
-        const returnedAtUTC = new Date(returnDate + 'T00:00:00Z').toISOString();
+        const returnedAtUTC = new Date().toISOString();
         try {
           const activeBorrow = await insertDB("select", "transactions_borrow", "transaction_id", { copy_id: copyId, date_returned: null });
           if (!activeBorrow.data || activeBorrow.data.length === 0) {
@@ -339,7 +339,7 @@ async function bookCopyModalLoader() {
           const borrowerId = borrowRow?.data?.[0]?.student_id;
           const user = await requireRole(["Admin", "Librarian"]);
           await runDBTransaction(async () => {
-            await insertDB("update", "transactions_borrow", { date_returned: returnDate }, { transaction_id: txId });
+            await insertDB("update", "transactions_borrow", { date_returned: returnedAtUTC }, { transaction_id: txId });
             await insertDB("insert", "transaction_borrow", {
               book_id: bookId,
               borrower_id: borrowerId,
@@ -349,7 +349,7 @@ async function bookCopyModalLoader() {
               returned_at: returnedAtUTC,
               staff_id: user.id,
             });
-            await insertDB("update", "book_copy", { status: "Available", condition: condition, returned_date: returnDate, borrowed_date: null, due_date: null }, { copy_id: copyId });
+            await insertDB("update", "book_copy", { status: "Available", condition: condition, returned_date: returnedAtUTC, borrowed_date: null, due_date: null }, { copy_id: copyId });
           });
           bsModal.hide();
           modal.remove();
