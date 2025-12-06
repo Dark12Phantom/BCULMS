@@ -33,7 +33,14 @@ class LibraryOperations {
     const copiesRes = await insertDB("select", "book_copy", "*", { book_id: bookId });
     const copies = copiesRes?.data || [];
     const nowStr = this.formatPHT12(new Date());
-    const archiveData = { archive_id: await this.generateArchiveId(), book_id: book.book_id, book_title: book.title, archive_date: nowStr };
+    const archiveData = {
+      archive_id: await this.generateArchiveId(),
+      book_id: book.book_id,
+      book_title: book.title,
+      author: book.author,
+      publication_date: book.publication_date,
+      archive_date: nowStr,
+    };
     await runDBTransaction(async () => {
       await insertDB("update", "books", { status: "Archived" }, { book_id: bookId });
       await insertDB("insert", "archived_books", archiveData);
@@ -277,12 +284,102 @@ class LibraryOperations {
    * Generate next archive id.
    */
   async generateArchiveId() {
-    const archives = await insertDB("select", "archived_books", "*", null);
+    const archivesRes = await insertDB("select", "archived_books", "*", null);
+    const archives = archivesRes?.data || [];
     if (archives.length === 0) {
       return 1;
     }
-    const maxId = Math.max(...archives.map((archive) => archive.archive_id));
+    const maxId = Math.max(...archives.map((archive) => Number(archive.archive_id) || 0));
     return maxId + 1;
+  }
+
+  /**
+   * Restore an archived book back to the active collection.
+   * @param {number|string} bookId Book identifier
+   */
+  async restoreArchivedBook(bookId) {
+    const user = await requireRole(["Admin", "Librarian"]);
+    
+    // Get archived book details
+    const archivedBookRes = await insertDB("select", "archived_books", "*", { book_id: bookId });
+    const archivedBooks = archivedBookRes?.data || [];
+    
+    if (archivedBooks.length === 0) {
+      return { success: false, message: "Archived book not found." };
+    }
+    
+    const archivedBook = archivedBooks[0];
+    
+    // Check if book already exists in active collection
+    const existingBookRes = await insertDB("select", "books", "*", { book_id: bookId });
+    const existingBooks = existingBookRes?.data || [];
+    
+    if (existingBooks.length > 0 && existingBooks[0].status !== "Archived") {
+      return { success: false, message: "Book already exists in active collection." };
+    }
+    
+    const nowStr = this.formatPHT12(new Date());
+    
+    await runDBTransaction(async () => {
+      // Restore book status
+      await insertDB("update", "books", { status: "In Library" }, { book_id: bookId });
+      
+      // Get archived copies
+      const archivedCopiesRes = await insertDB("select", "archived_book_copy", "*", { book_id: bookId });
+      const archivedCopies = archivedCopiesRes?.data || [];
+      
+      // Restore archived copies
+      for (const archivedCopy of archivedCopies) {
+        await insertDB("insert", "book_copy", {
+          copy_id: archivedCopy.copy_id,
+          book_id: archivedCopy.book_id,
+          status: archivedCopy.status || "Available",
+          condition: archivedCopy.condition || "Good",
+          borrowed_date: archivedCopy.borrowed_date || null,
+          returned_date: archivedCopy.returned_date || null,
+          due_date: archivedCopy.due_date || null,
+        });
+        
+        // Delete from archived_book_copy
+        await insertDB("delete", "archived_book_copy", null, { archive_copy_id: archivedCopy.archive_copy_id });
+      }
+      
+      // Get archived transactions
+      const archivedTxRes = await insertDB("select", "archived_transaction_borrow", "*", { book_id: bookId });
+      const archivedTxs = archivedTxRes?.data || [];
+      
+      // Restore archived transactions
+      for (const archivedTx of archivedTxs) {
+        await insertDB("insert", "transaction_borrow", {
+          book_id: archivedTx.book_id,
+          copy_id: archivedTx.copy_id,
+          borrower_id: archivedTx.borrower_id,
+          transaction_type: archivedTx.transaction_type,
+          borrowed_at: archivedTx.borrowed_at,
+          due_at: archivedTx.due_at,
+          returned_at: archivedTx.returned_at,
+          staff_id: archivedTx.staff_id,
+        });
+        
+        // Delete from archived_transaction_borrow
+        await insertDB("delete", "archived_transaction_borrow", null, { id: archivedTx.id });
+      }
+      
+      // Delete from archived_books
+      await insertDB("delete", "archived_books", null, { book_id: bookId });
+      
+      // Log the restoration
+      await insertDB("insert", "transaction_library", {
+        book_id: bookId,
+        operation_type: "Restore",
+        before_values: JSON.stringify({ title: archivedBook.book_title, status: "Archived" }),
+        after_values: JSON.stringify({ status: "In Library" }),
+        staff_id: user.id,
+        timestamp: nowStr,
+      });
+    });
+    
+    return { success: true, book_id: bookId, book_title: archivedBook.book_title };
   }
 
   /**
@@ -352,6 +449,7 @@ async function deleteStudent(studentId) { return libraryOperations.deleteStudent
 async function archiveStudent(studentId) { return libraryOperations.archiveStudent(studentId); }
 async function generateArchiveId() { return libraryOperations.generateArchiveId(); }
 async function insertStudent(studentData) { return libraryOperations.insertStudent(studentData); }
+async function restoreArchivedBook(bookId) { return libraryOperations.restoreArchivedBook(bookId); }
 if (typeof window !== "undefined") {
   window.BCULMS = window.BCULMS || {};
   window.BCULMS.LibraryOperations = LibraryOperations;

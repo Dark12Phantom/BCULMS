@@ -21,11 +21,7 @@ class DatabaseOperations {
       switch (operation.toLowerCase()) {
         case "insert":
           result = await this.handleInsert(table, data);
-          const idResult = await Neutralino.os.execCommand(
-            `sqlite3 "${DB_PATH}" "SELECT last_insert_rowid();"`
-          );
-          const lastId = parseInt(idResult.stdOut.trim(), 10);
-          result.lastId = lastId || null;
+          result.lastId = result.lastInsertRowid || null;
           hasChanges = result.changes > 0;
           break;
 

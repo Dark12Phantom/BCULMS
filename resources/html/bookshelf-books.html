@@ -99,6 +99,15 @@
           </span>
           <span class="description">Student Page</span>
         </a>
+
+        <!-- Archived Books - Bottom position -->
+        <a class="nav-link mb-3" href="./archived-books.html">
+          <p></p>
+          <span class="icon">
+            <i class="bi bi-archive"></i>
+          </span>
+          <span class="description">Archived Books</span>
+        </a>
       </nav>
     </div>
 
@@ -306,14 +315,20 @@
         const dateInput = document.getElementById("publicationDateInput");
         dateInput.max = currentDate;
 
-        // Add validation for year input
+        // Add validation for year input (only clamp once 4 digits entered)
         dateInput.addEventListener("input", function () {
           if (this.type === "number") {
-            const yearValue = parseInt(this.value);
+            const raw = String(this.value || "");
+            if (!raw || raw.length < 4) {
+              return;
+            }
+            const yearValue = parseInt(raw, 10);
+            if (Number.isNaN(yearValue)) {
+              return;
+            }
             if (yearValue > currentYear) {
               this.value = currentYear;
-            }
-            if (yearValue < 1000) {
+            } else if (yearValue < 1000) {
               this.value = 1000;
             }
           }
@@ -345,6 +360,7 @@
                 dateInput.max = currentDate;
                 dateInput.removeAttribute("min");
                 dateInput.step = "";
+                dateInput.removeAttribute("inputmode");
                 break;
               case "month":
                 dateInput.type = "month";
@@ -352,6 +368,7 @@
                 dateInput.max = currentMonth;
                 dateInput.removeAttribute("min");
                 dateInput.step = "";
+                dateInput.removeAttribute("inputmode");
                 break;
               case "year":
                 dateInput.type = "number";
@@ -359,6 +376,7 @@
                 dateInput.min = "1000";
                 dateInput.max = currentYear.toString();
                 dateInput.step = "1";
+                dateInput.setAttribute("inputmode", "numeric");
                 break;
             }
 
@@ -422,6 +440,7 @@
     <script src="../js/main.js"></script>
     <script src="../js/sql-wasm.js"></script>
     <script src="../js/database-connection.js"></script>
+    <script src="../js/seed-tables.js"></script>
     <script src="../js/create-table.js"></script>
     <script src="../js/database-operations.js"></script>
     <script src="../js/auth.js"></script>

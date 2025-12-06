@@ -12,6 +12,8 @@ class DatabaseSchema {
 	"archive_id" INTEGER NOT NULL UNIQUE,
 	"book_id"	INTEGER NOT NULL UNIQUE,
 	"book_title"	TEXT NOT NULL,
+  "author" TEXT,
+  "publication_date" TEXT,
 	"archive_date"	TEXT NOT NULL,
   "due_date" TEXT,
 	PRIMARY KEY("archive_id"),
@@ -222,6 +224,32 @@ async function applyAdditionalSchema() {
   db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_borrower ON "archived_transaction_borrow"("borrower_id");`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_type ON "archived_transaction_borrow"("transaction_type");`);
   db.run(`CREATE INDEX IF NOT EXISTS idx_arch_tx_borrow_dates ON "archived_transaction_borrow"("borrowed_at", "returned_at", "due_at");`);
+
+  // Ensure archived_books has author and publication_date columns
+  try {
+    let stmtAb = db.prepare("PRAGMA table_info(archived_books)");
+    let hasAuthor = false;
+    let hasPubDate = false;
+    while (stmtAb.step()) {
+      const row = stmtAb.getAsObject();
+      if (row.name === 'author') hasAuthor = true;
+      if (row.name === 'publication_date') hasPubDate = true;
+    }
+    stmtAb.free();
+    if (!hasAuthor) {
+      try { db.run(`ALTER TABLE archived_books ADD COLUMN author TEXT;`); } catch (_) {}
+    }
+    if (!hasPubDate) {
+      try { db.run(`ALTER TABLE archived_books ADD COLUMN publication_date TEXT;`); } catch (_) {}
+    }
+    // Backfill from books table where missing
+    try {
+      db.run(`UPDATE archived_books SET author = (SELECT author FROM books WHERE books.book_id = archived_books.book_id) WHERE author IS NULL OR author = ''`);
+    } catch (_) {}
+    try {
+      db.run(`UPDATE archived_books SET publication_date = (SELECT publication_date FROM books WHERE books.book_id = archived_books.book_id) WHERE publication_date IS NULL OR publication_date = ''`);
+    } catch (_) {}
+  } catch (_) {}
 }
 if (typeof window !== "undefined") {
   window.BCULMS = window.BCULMS || {};

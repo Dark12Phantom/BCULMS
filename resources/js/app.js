@@ -16,6 +16,24 @@ async function initializeApp() {
       await dashboardTotalStudents();
       await dashboardNotifications();
       await dashboardRecentActivity();
+      const openDbFolderBtn = document.querySelector("#openDbFolderBtn");
+      if (openDbFolderBtn) {
+        openDbFolderBtn.addEventListener("click", async () => {
+          try {
+            const dbPathStr = (window.DB_PATH || "").replace(/\\/g, "/");
+            const dir = dbPathStr.substring(0, dbPathStr.lastIndexOf("/"));
+            if (!dir) return;
+            try {
+              await Neutralino.os.open(dir);
+            } catch (_) {
+              const dirWin = dir.replace(/\//g, "\\");
+              await Neutralino.os.execCommand(`explorer.exe "${dirWin}"`);
+            }
+          } catch (err) {
+            console.error("Failed to open database folder:", err);
+          }
+        });
+      }
 
     } else if (path.endsWith("bookshelf-books.html")) {
       await renderBooks();
